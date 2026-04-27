@@ -19,9 +19,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MahjongViewModel : ViewModel() {
-    private val detectionModel = TileDetectionModel()
-
+class MahjongViewModel(private val detectionModel: TileDetectionModel) : ViewModel() {
     private val _isCalculating = MutableStateFlow(false)
     val isCalculating: StateFlow<Boolean> = _isCalculating.asStateFlow()
 

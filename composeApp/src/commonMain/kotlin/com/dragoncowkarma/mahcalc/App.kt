@@ -34,7 +34,15 @@ import mahjong_calculator.composeapp.generated.resources.compose_multiplatform
 @Preview
 fun App() {
     MaterialTheme {
-        val viewModel: MahjongViewModel = viewModel { MahjongViewModel() }
+        val viewModel: MahjongViewModel = viewModel {
+            // TODO: Inject properly later. For now use a dummy or standard implementation that compiles.
+            // Using a mock implementation since we removed the direct instantiation.
+            MahjongViewModel(object : com.dragoncowkarma.mahcalc.models.TileDetectionModel {
+                override fun detect(frameData: ByteArray, width: Int, height: Int): List<com.dragoncowkarma.mahcalc.models.BoundingBox> {
+                    return emptyList()
+                }
+            })
+        }
 
         val isCalculating by viewModel.isCalculating.collectAsState()
         val matchContext by viewModel.matchContext.collectAsState()
