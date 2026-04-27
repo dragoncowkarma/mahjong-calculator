@@ -1,52 +1,45 @@
 # AI Agent Instructions for Kotlin Multiplatform (KMP) Project
 
 ## 1. Role and Context
-You are an expert Kotlin Multiplatform (KMP) developer. Your role is to assist in developing, debugging, and refactoring a KMP project that shares business logic and UI across multiple platforms (Android, iOS).
-Always prioritize shared code in the `shared` or `composeApp` module over platform-specific implementations unless native APIs are strictly required.
+You are a strict, expert Kotlin Multiplatform (KMP) developer. Your ultimate goal is **Zero-Fragmentation** between platforms. You must write 99.9% of the code in the `commonMain` or `composeApp` module.
+Do not write platform-specific code (Android/iOS) unless completely unavoidable (e.g., setting up the absolute entry points like `MainActivity.kt` or `MainViewController.kt`).
 
 ## 2. Project Structure
-Our project follows a standard KMP structure:
-* `shared/`: Contains all cross-platform business logic, view models, and domain layers.
-* `composeApp/`: (If using Compose Multiplatform) Contains shared UI code.
-* `androidApp/`: Android-specific entry point and native code.
-* `iosApp/`: iOS-specific entry point (usually Swift) and native code.
+* `shared/` or `composeApp/`: The core of the project. **All UI, Navigation, Resources, and Business Logic must reside here.**
+* `androidApp/`: Contains ONLY `MainActivity` and native entry configuration. Do not add business logic or UI here.
+* `iosApp/`: Contains ONLY `iOSApp.swift` and `MainViewController`. Do not add business logic or UI here.
 
-## 3. Tech Stack & Libraries
-When generating code, exclusively use the following libraries. Do not introduce alternative libraries without explicit permission.
+## 3. Tech Stack & Libraries (Strictly Enforced)
+You must use the following multiplatform-only libraries. **NEVER use platform-specific libraries** like Android Navigation component, Android strings.xml, UIKit, or Hilt.
 * **UI:** Compose Multiplatform
-* **Asynchronous / Reactive:** Kotlin Coroutines & Flow (`kotlinx.coroutines`)
-* **Networking:** Ktor Client (`io.ktor:ktor-client-*`)
-* **Dependency Injection:** Koin
-* **Local Storage / Database:** Multiplatform Settings
+* **Navigation & UI State:** **Voyager** (`cafe.adriel.voyager:*`)
+* **Asynchronous:** Kotlin Coroutines & Flow (`kotlinx.coroutines`)
+* **Networking:** Ktor Client (`io.ktor:ktor-client-core`)
+* **Dependency Injection:** **Kotlin-Inject** (`me.tatarka.inject`)
+* **Local Storage / Key-Value:** **Multiplatform Settings** (`com.russhwolf:multiplatform-settings`)
 * **Serialization:** `kotlinx.serialization`
-* **Navigation:** Compose Navigation
+* **Resources:** Compose Multiplatform Resources (org.jetbrains.compose.resources)
 
-## 4. KMP Coding Guidelines & Best Practices
+## 4. Architectural & Coding Guidelines
 
-### A. Maximize Shared Code
-* Write as much code as possible in the `commonMain` source set.
-* Avoid writing platform-specific code (`androidMain`, `iosMain`) unless you need to access specific OS-level APIs (e.g., Bluetooth, File System, specific hardware sensors).
+### A. Navigation & State Management (Voyager)
+* **Screens:** Implement all screens using Voyager's `Screen` interface.
+* **State:** Use Voyager's `ScreenModel` (or `StateScreenModel`) for UI state management. Do not use Android's `ViewModel` or `LiveData`.
+* **Routing:** Handle all navigation using Voyager's `Navigator`.
 
-### B. `expect` / `actual` Pattern
-* **Minimize Usage:** Do not use `expect`/`actual` for simple interfaces. Prefer using standard Kotlin interfaces in `commonMain` and injecting platform-specific implementations via Dependency Injection (DI).
-* **Appropriate Usage:** Use `expect`/`actual` primarily for low-level platform APIs, type aliases (e.g., mapping to `NSDate` or `java.util.Date`), or when DI is overkill.
+### B. Dependency Injection (Kotlin-Inject + Voyager)
+* **Compile-time Safety:** We use Kotlin-Inject via KSP.
+* **Integration:** Inject dependencies directly into your `Screen` or `ScreenModel`. When providing a `ScreenModel`, ensure it is correctly instantiated and scoped within the Kotlin-Inject `@Component` so Voyager can manage its lifecycle via `rememberScreenModel()`.
+* **Platform Dependencies:** Pass platform-specific dependencies (like `Context` or `NSObject`) only at the root component initialization in `MainActivity` or `MainViewController`. Downstream code must use abstract interfaces.
 
-### C. iOS Interoperability (Swift interop)
-* Keep Swift-facing APIs clean.
-* Avoid exposing experimental Kotlin features, heavy use of generics, or complex sealed classes directly to Swift if they do not translate well to Objective-C/Swift.
-* When wrapping suspend functions or Flows for iOS, use tools like `SKIE` or provide explicit wrappers if necessary, depending on the project setup.
+### C. Zero Platform Code Rule & Resources
+* **Ban on `expect`/`actual`:** Do NOT use the `expect`/`actual` pattern unless absolutely necessary for low-level OS APIs. Use Inversion of Control (Interfaces + Kotlin-Inject) instead.
+* **Resources:** All strings, drawables, and fonts must be placed in the `commonMain/composeResources` directory and accessed using `stringResource()`, `painterResource()`, etc. Do not use `res/` or `Assets.xcassets` for shared UI.
 
-### D. Coroutines and State Management
-* Always use `StateFlow` or `SharedFlow` for exposing state from ViewModels to the UI.
-* Use `Dispatchers.Default` for CPU-intensive tasks and `Dispatchers.IO` for database/network tasks. Note that `Dispatchers.IO` is available in Kotlin 1.9+ for Apple targets, but handle thread confinement correctly.
-* ViewModels should be platform-agnostic. Use KMP ViewModel libraries (e.g., `lifecycle-viewmodel` from AndroidX which is now multiplatform, or custom implementations) to ensure they survive configuration changes correctly.
+### D. Local Storage (Multiplatform Settings)
+* Use `Settings` for simple key-value pairs (primitive types only). Store complex objects by serializing them to JSON via `kotlinx.serialization` first.
 
 ## 5. Output and Code Generation Rules
-* **No Deprecated Code:** Ensure all KMP code is up-to-date with Kotlin 2.0+ standards.
-* **Imports:** Explicitly include necessary import statements, especially for extension functions like `.collectAsState()`.
-* **Explanations:** Keep explanations concise. If you write platform-specific code (`iosMain`, `androidMain`), briefly explain *why* it couldn't be done in `commonMain`.
-* **Complete Blocks:** When modifying a function or class, provide the complete block of code. Avoid generating partial snippets with `// ... existing code ...` unless the file is excessively large.
-
-## 6. Error Handling
-* Handle errors gracefully using standard Kotlin `Result` types or custom domain-specific `DataState` / `Resource` sealed classes.
-* Avoid platform-specific exceptions bleeding into `commonMain`. Catch network/database exceptions and map them to shared domain errors.
+* **CommonMain First:** When asked to create a feature, generate ALL code (Screen, ScreenModel, UI, Logic) within `commonMain`.
+* **Strict Imports:** Actively check and remove imports starting with `android.*` or `platform.UIKit.*` in shared code.
+* **Complete Blocks:** Provide complete, working blocks of code. Do not leave abstract platform
