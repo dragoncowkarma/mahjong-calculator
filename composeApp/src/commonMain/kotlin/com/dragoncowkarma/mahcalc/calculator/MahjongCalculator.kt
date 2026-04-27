@@ -68,7 +68,7 @@ object MahjongCalculator {
                 counts[i] -= 2
 
                 // Iteratively find decompositions
-                val decompositions = findDecompositions(counts.clone())
+                val decompositions = findDecompositions(counts.copyOf())
 
                 for (decomp in decompositions) {
                     val melds = mutableListOf<Meld>()
@@ -149,7 +149,7 @@ object MahjongCalculator {
      */
     private fun findDecompositions(initialCounts: IntArray): List<List<Meld>> {
         val results = mutableListOf<List<Meld>>()
-        val counts = initialCounts.clone()
+        val counts = initialCounts.copyOf()
         val stateStack = IntArray(8) // indices 0..3 for choice (0=uninit, 1=triplet, 2=sequence, 3=done), 4..7 for iAt
         val currentMelds = arrayOfNulls<Meld>(4)
         var depth = 0

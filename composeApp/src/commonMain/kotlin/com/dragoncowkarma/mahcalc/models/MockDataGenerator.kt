@@ -29,4 +29,13 @@ object MockDataGenerator {
             yakuList = listOf("Riichi", "Tsumo", "Tanyao", "Dora 2"),
             pointsToReceive = 8000
         )
+
+    val mockBoundingBoxes: List<BoundingBox>
+        get() = listOf(
+            BoundingBox(10f, 10f, 20f, 30f, 0.95f, 1),
+            BoundingBox(12f, 11f, 18f, 28f, 0.85f, 1), // Overlapping with first
+            BoundingBox(50f, 50f, 20f, 30f, 0.90f, 2),
+            BoundingBox(100f, 100f, 20f, 30f, 0.88f, 3),
+            BoundingBox(98f, 102f, 22f, 28f, 0.70f, 3) // Overlapping with fourth
+        )
 }
