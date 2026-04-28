@@ -1,27 +1,24 @@
 package com.dragoncowkarma.mahcalc.ui
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import cafe.adriel.voyager.core.model.ScreenModel
+import cafe.adriel.voyager.core.model.screenModelScope
 import com.dragoncowkarma.mahcalc.calculator.MahjongCalculator
 import com.dragoncowkarma.mahcalc.calculator.ScoreCalculator
 import com.dragoncowkarma.mahcalc.models.AgariEvaluator
 import com.dragoncowkarma.mahcalc.models.MahjongTile
 import com.dragoncowkarma.mahcalc.models.MatchContext
+import com.dragoncowkarma.mahcalc.models.MockDataGenerator
 import com.dragoncowkarma.mahcalc.models.ScoreResult
 import com.dragoncowkarma.mahcalc.models.SpatialTileSorter
-import com.dragoncowkarma.mahcalc.models.TileDetectionModel
 import com.dragoncowkarma.mahcalc.models.nonMaximumSuppression
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MahjongViewModel : ViewModel() {
-    private val detectionModel = TileDetectionModel()
-
+class MahjongScreenModel : ScreenModel {
     private val _isCalculating = MutableStateFlow(false)
     val isCalculating: StateFlow<Boolean> = _isCalculating.asStateFlow()
 
@@ -55,15 +52,15 @@ class MahjongViewModel : ViewModel() {
     fun processCameraFrame(frameData: ByteArray, width: Int, height: Int) {
         if (_isCalculating.value) return
 
-        viewModelScope.launch {
+        screenModelScope.launch {
             _isCalculating.value = true
             _resultState.value = null
 
             // Offload heavy processing to Default dispatcher
             val result = withContext(Dispatchers.Default) {
                 try {
-                    // 1. Run TileDetectionModel
-                    val rawBoxes = detectionModel.detect(frameData, width, height)
+                    // 1. Use mock bounding boxes (real detection model would be platform-specific)
+                    val rawBoxes = MockDataGenerator.mockBoundingBoxes
 
                     // 2. Filter boxes with Non-Maximum Suppression (NMS)
                     val filteredBoxes = nonMaximumSuppression(rawBoxes, iouThreshold = 0.5f)
@@ -71,12 +68,7 @@ class MahjongViewModel : ViewModel() {
                     // 3. Run SpatialTileSorter
                     val tileIds = SpatialTileSorter.sortToTileIds(filteredBoxes)
 
-                    if (tileIds.size == 14) {
-                        tileIds
-                    } else {
-                        // For this implementation, we return what we found, and recalculate if it's 14
-                        tileIds
-                    }
+                    tileIds
                 } catch (e: Exception) {
                     IntArray(0)
                 }

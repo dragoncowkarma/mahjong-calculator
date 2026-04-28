@@ -1,7 +1,5 @@
 package com.dragoncowkarma.mahcalc
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,90 +16,91 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import cafe.adriel.voyager.core.model.rememberScreenModel
+import cafe.adriel.voyager.core.screen.Screen
 import com.dragoncowkarma.mahcalc.ui.ContextModal
-import com.dragoncowkarma.mahcalc.ui.MahjongViewModel
+import com.dragoncowkarma.mahcalc.ui.MahjongScreenModel
 import com.dragoncowkarma.mahcalc.ui.ScoreResultDashboard
 import com.dragoncowkarma.mahcalc.ui.TileCorrectionPanel
-import org.jetbrains.compose.resources.painterResource
 
-import mahjong_calculator.composeapp.generated.resources.Res
-import mahjong_calculator.composeapp.generated.resources.compose_multiplatform
+/**
+ * The main Voyager Screen for the Mahjong Calculator.
+ */
+class MahjongScreen : Screen {
 
-@Composable
-@Preview
-fun App() {
-    MaterialTheme {
-        val viewModel: MahjongViewModel = viewModel { MahjongViewModel() }
+    @Composable
+    override fun Content() {
+        MaterialTheme {
+            val screenModel = rememberScreenModel { MahjongScreenModel() }
 
-        val isCalculating by viewModel.isCalculating.collectAsState()
-        val matchContext by viewModel.matchContext.collectAsState()
-        val detectedTiles by viewModel.detectedTiles.collectAsState()
-        val resultState by viewModel.resultState.collectAsState()
+            val isCalculating by screenModel.isCalculating.collectAsState()
+            val matchContext by screenModel.matchContext.collectAsState()
+            val detectedTiles by screenModel.detectedTiles.collectAsState()
+            val resultState by screenModel.resultState.collectAsState()
 
-        var showContextModal by remember { mutableStateOf(false) }
+            var showContextModal by remember { mutableStateOf(false) }
 
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.background)
-                .safeContentPadding()
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Spacer(modifier = Modifier.height(16.dp))
+            Column(
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.background)
+                    .safeContentPadding()
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Spacer(modifier = Modifier.height(16.dp))
 
-            // Mock "Simulate Detection" button since we don't have a real camera feed setup yet
-            Row {
-                Button(onClick = {
-                    // Pass dummy byte array to simulate detection
-                    viewModel.processCameraFrame(ByteArray(0), 1080, 1920)
-                }, enabled = !isCalculating) {
-                    Text("Simulate Detection")
-                }
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                Button(onClick = { showContextModal = true }) {
-                    Text("Game State")
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            if (isCalculating) {
-                CircularProgressIndicator()
-            }
-
-            // Detected Tiles Panel
-            if (detectedTiles.isNotEmpty()) {
-                TileCorrectionPanel(
-                    tiles = detectedTiles,
-                    onTilesCorrected = { correctedTiles ->
-                        viewModel.updateTiles(correctedTiles)
+                // Mock "Simulate Detection" button since we don't have a real camera feed setup yet
+                Row {
+                    Button(onClick = {
+                        // Pass dummy byte array to simulate detection
+                        screenModel.processCameraFrame(ByteArray(0), 1080, 1920)
+                    }, enabled = !isCalculating) {
+                        Text("Simulate Detection")
                     }
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    Button(onClick = { showContextModal = true }) {
+                        Text("Game State")
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                if (isCalculating) {
+                    CircularProgressIndicator()
+                }
+
+                // Detected Tiles Panel
+                if (detectedTiles.isNotEmpty()) {
+                    TileCorrectionPanel(
+                        tiles = detectedTiles,
+                        onTilesCorrected = { correctedTiles ->
+                            screenModel.updateTiles(correctedTiles)
+                        }
+                    )
+                } else if (!isCalculating) {
+                    Text("No tiles detected. Simulate detection to begin.", style = MaterialTheme.typography.bodyMedium)
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Score Result Dashboard
+                resultState?.let { score ->
+                    ScoreResultDashboard(scoreResult = score)
+                }
+            }
+
+            if (showContextModal) {
+                ContextModal(
+                    context = matchContext,
+                    onApply = { newContext ->
+                        screenModel.updateMatchContext(newContext)
+                    },
+                    onDismissRequest = { showContextModal = false }
                 )
-            } else if (!isCalculating) {
-                Text("No tiles detected. Simulate detection to begin.", style = MaterialTheme.typography.bodyMedium)
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Score Result Dashboard
-            resultState?.let { score ->
-                ScoreResultDashboard(scoreResult = score)
-            }
-        }
-
-        if (showContextModal) {
-            ContextModal(
-                context = matchContext,
-                onApply = { newContext ->
-                    viewModel.updateMatchContext(newContext)
-                },
-                onDismissRequest = { showContextModal = false }
-            )
         }
     }
 }

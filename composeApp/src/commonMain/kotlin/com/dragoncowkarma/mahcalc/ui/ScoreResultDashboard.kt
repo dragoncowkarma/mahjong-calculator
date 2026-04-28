@@ -25,7 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+
 import androidx.compose.ui.unit.dp
 import com.dragoncowkarma.mahcalc.models.ScoreResult
 
@@ -103,7 +103,6 @@ fun ScoreResultDashboard(scoreResult: ScoreResult, modifier: Modifier = Modifier
     }
 }
 
-@Preview
 @Composable
 fun PreviewScoreResultDashboard() {
     MaterialTheme {

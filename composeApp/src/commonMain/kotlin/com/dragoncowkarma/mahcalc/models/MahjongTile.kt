@@ -1,13 +1,11 @@
 package com.dragoncowkarma.mahcalc.models
 
-import kotlin.jvm.JvmInline
-
 enum class Suit {
     Man, Pin, Sou, Honor
 }
 
 /**
- * A Mahjong tile represented as an inline class to avoid object allocation overhead.
+ * A Mahjong tile represented as a data class.
  *
  * There are 34 distinct tiles in Mahjong:
  * 0-8: Man (Characters) 1-9
@@ -15,8 +13,7 @@ enum class Suit {
  * 18-26: Sou (Bamboo) 1-9
  * 27-33: Honor (East, South, West, North, White, Green, Red)
  */
-@JvmInline
-value class MahjongTile(val id: Int) {
+data class MahjongTile(val id: Int) {
     init {
         require(id in 0..33) { "Tile id must be between 0 and 33, but was $id" }
     }
