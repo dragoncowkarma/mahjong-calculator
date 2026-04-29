@@ -19,10 +19,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.dragoncowkarma.mahcalc.ui.ContextModal
 import com.dragoncowkarma.mahcalc.ui.MahjongScreenModel
 import com.dragoncowkarma.mahcalc.ui.ScoreResultDashboard
 import com.dragoncowkarma.mahcalc.ui.TileCorrectionPanel
+import com.dragoncowkarma.mahcalc.ui.YakuListScreen
 
 /**
  * The main Voyager Screen for the Mahjong Calculator.
@@ -32,6 +35,7 @@ class MahjongScreen(private val component: AppComponent) : Screen {
     @Composable
     override fun Content() {
         MaterialTheme {
+            val navigator = LocalNavigator.currentOrThrow
             val screenModel = rememberScreenModel { component.mahjongScreenModel }
 
             val isCalculating by screenModel.isCalculating.collectAsState()
@@ -64,6 +68,12 @@ class MahjongScreen(private val component: AppComponent) : Screen {
                     Button(onClick = { showContextModal = true }) {
                         Text("Game State")
                     }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Button(onClick = { navigator.push(YakuListScreen()) }) {
+                    Text("역 목록")
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
