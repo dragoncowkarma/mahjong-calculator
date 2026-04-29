@@ -38,6 +38,14 @@
       <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/ui/MahjongScreenModel.kt</Path>
       <Responsibility>Manages UI state, coordinates hand detection via TileDetectionModel, and orchestrates score calculation using MahjongCalculator.</Responsibility>
     </Component>
+    <Component name="YakuListScreen" type="Screen">
+      <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/ui/YakuListScreen.kt</Path>
+      <Responsibility>Displays a categorized list of Japanese Mahjong Yakus in Korean.</Responsibility>
+    </Component>
+    <Component name="YakuData" type="Model">
+      <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/models/YakuData.kt</Path>
+      <Responsibility>Holds static hardcoded list of Mahjong Yakus (YakuInfo) and their descriptions in Korean.</Responsibility>
+    </Component>
     <Component name="MahjongCalculator" type="Logic">
       <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/calculator/MahjongCalculator.kt</Path>
       <Responsibility>The main orchestration engine that calculates Yaku, Fu, and total points for a given Mahjong hand and context.</Responsibility>
@@ -69,6 +77,7 @@
 
   <DataFlowAndState>
     <Description>UI state is held in Voyager ScreenModels using MutableStateFlow. Screens observe state via StateFlow.collectAsState(). User actions trigger ScreenModel methods that update state asynchronously using screenModelScope.</Description>
+    <Route name="YakuListScreen">Added navigation from `MahjongScreen` to `YakuListScreen` via Voyager's `navigator.push(YakuListScreen())`.</Route>
   </DataFlowAndState>
 
   <StrictConventions>
