@@ -18,7 +18,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MahjongScreenModel : ScreenModel {
+import me.tatarka.inject.annotations.Inject
+import com.dragoncowkarma.mahcalc.models.TileDetectionModel
+
+@Inject
+class MahjongScreenModel(
+    private val tileDetectionModel: TileDetectionModel
+) : ScreenModel {
     private val _isCalculating = MutableStateFlow(false)
     val isCalculating: StateFlow<Boolean> = _isCalculating.asStateFlow()
 
@@ -60,7 +66,7 @@ class MahjongScreenModel : ScreenModel {
             val result = withContext(Dispatchers.Default) {
                 try {
                     // 1. Use mock bounding boxes (real detection model would be platform-specific)
-                    val rawBoxes = MockDataGenerator.mockBoundingBoxes
+                    val rawBoxes = tileDetectionModel.detect(frameData, width, height)
 
                     // 2. Filter boxes with Non-Maximum Suppression (NMS)
                     val filteredBoxes = nonMaximumSuppression(rawBoxes, iouThreshold = 0.5f)

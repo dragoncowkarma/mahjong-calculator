@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.ksp)
 }
 
 kotlin {
@@ -41,6 +42,7 @@ kotlin {
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.screenmodel)
             implementation(libs.voyager.transitions)
+            implementation(libs.kotlin.inject.runtime)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -73,6 +75,13 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+}
+
+dependencies {
+    add("kspCommonMainMetadata", libs.kotlin.inject.compiler)
+    add("kspAndroid", libs.kotlin.inject.compiler)
+    add("kspIosSimulatorArm64", libs.kotlin.inject.compiler)
+    add("kspIosArm64", libs.kotlin.inject.compiler)
 }
 
 dependencies {
