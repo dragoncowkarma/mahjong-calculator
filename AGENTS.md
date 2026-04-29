@@ -42,4 +42,13 @@ You must use the following multiplatform-only libraries. **NEVER use platform-sp
 ## 5. Output and Code Generation Rules
 * **CommonMain First:** When asked to create a feature, generate ALL code (Screen, ScreenModel, UI, Logic) within `commonMain`.
 * **Strict Imports:** Actively check and remove imports starting with `android.*` or `platform.UIKit.*` in shared code.
-* **Complete Blocks:** Provide complete, working blocks of code. Do not leave abstract platform
+* **Complete Blocks:** Provide complete, working blocks of code. Do not leave abstract platform placeholders.
+
+## 6. Workflow & Context Management
+
+### A. Pre-Task Initialization
+* **Refer to `SUMMARY.xml`:** Before commencing any task, you MUST prioritize reading `SUMMARY.xml` to grasp the project's architecture and dependencies. This step is mandatory to eliminate redundant file system traversal and minimize operational overhead.
+
+### B. Post-Task Updates
+* **Update `SUMMARY.xml`:** Upon completing any code modification, file addition, deletion, or structural change, you MUST immediately update `SUMMARY.xml` with the latest changes. This is a critical requirement to maintain persistent project context and ensure seamless continuity for future operations.
+
