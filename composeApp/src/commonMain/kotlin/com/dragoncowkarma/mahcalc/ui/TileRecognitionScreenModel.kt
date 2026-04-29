@@ -37,7 +37,12 @@ class TileRecognitionScreenModel(
     private val _state = MutableStateFlow<TileRecognitionState>(TileRecognitionState.Idle)
     val state: StateFlow<TileRecognitionState> = _state.asStateFlow()
 
-    fun processImage(imageBytes: ByteArray) {
+    fun processImage(imageBytes: ByteArray?) {
+        if (imageBytes == null || imageBytes.isEmpty()) {
+            _state.value = TileRecognitionState.Error("Invalid or empty image selected.")
+            return
+        }
+
         screenModelScope.launch {
             _state.value = TileRecognitionState.Loading
 
@@ -56,9 +61,18 @@ class TileRecognitionScreenModel(
 
                 // Offload to background thread for detection
                 withContext(Dispatchers.Default) {
-                    // Detect boxes (assuming 1080x1920 or typical size for now since we don't have intrinsic width/height easily)
-                    // The dummy detection model does not actually care about width/height.
-                    val rawBoxes = tileDetectionModel.detect(imageBytes, bitmap.width, bitmap.height)
+                    val detectionResult = runCatching {
+                        tileDetectionModel.detect(imageBytes, bitmap.width, bitmap.height)
+                    }
+
+                    if (detectionResult.isFailure) {
+                        _state.value = TileRecognitionState.Error(
+                            detectionResult.exceptionOrNull()?.message ?: "Detection engine error"
+                        )
+                        return@withContext
+                    }
+
+                    val rawBoxes = detectionResult.getOrDefault(emptyList())
                     val filteredBoxes = nonMaximumSuppression(rawBoxes, iouThreshold = 0.5f)
 
                     // Classification heuristic

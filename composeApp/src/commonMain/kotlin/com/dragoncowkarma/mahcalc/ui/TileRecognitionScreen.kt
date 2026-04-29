@@ -40,9 +40,7 @@ class TileRecognitionScreen(private val component: AppComponent) : Screen {
             val imagePicker = component.imagePicker
 
             val launchPicker = imagePicker.registerPicker { bytes ->
-                if (bytes != null) {
-                    screenModel.processImage(bytes)
-                }
+                screenModel.processImage(bytes)
             }
 
             Column(
