@@ -1,5 +1,6 @@
 package com.dragoncowkarma.mahcalc
 
+import androidx.compose.runtime.staticCompositionLocalOf
 import com.dragoncowkarma.mahcalc.models.ImageBitmapDecoder
 import com.dragoncowkarma.mahcalc.models.ImagePicker
 import com.dragoncowkarma.mahcalc.models.TileDetectionModel
@@ -13,4 +14,8 @@ interface AppComponent {
     val imageBitmapDecoder: ImageBitmapDecoder
     val mahjongScreenModel: MahjongScreenModel
     val tileRecognitionScreenModel: TileRecognitionScreenModel
+}
+
+val LocalAppComponent = staticCompositionLocalOf<AppComponent> {
+    error("No AppComponent provided")
 }

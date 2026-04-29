@@ -30,11 +30,12 @@ import com.dragoncowkarma.mahcalc.ui.YakuListScreen
 /**
  * The main Voyager Screen for the Mahjong Calculator.
  */
-class MahjongScreen(private val component: AppComponent) : Screen {
+class MahjongScreen : Screen {
 
     @Composable
     override fun Content() {
         MaterialTheme {
+            val component = LocalAppComponent.current
             val navigator = LocalNavigator.currentOrThrow
             val screenModel = rememberScreenModel { component.mahjongScreenModel }
 
@@ -79,7 +80,7 @@ class MahjongScreen(private val component: AppComponent) : Screen {
 
                     Spacer(modifier = Modifier.width(16.dp))
 
-                    Button(onClick = { navigator.push(com.dragoncowkarma.mahcalc.ui.TileRecognitionScreen(component)) }) {
+                    Button(onClick = { navigator.push(com.dragoncowkarma.mahcalc.ui.TileRecognitionScreen()) }) {
                         Text("Tile Recognition")
                     }
                 }

@@ -27,12 +27,14 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.dragoncowkarma.mahcalc.AppComponent
 import com.dragoncowkarma.mahcalc.models.ImageSource
+import com.dragoncowkarma.mahcalc.LocalAppComponent
 
-class TileRecognitionScreen(private val component: AppComponent) : Screen {
+class TileRecognitionScreen : Screen {
 
     @Composable
     override fun Content() {
         MaterialTheme {
+            val component = LocalAppComponent.current
             val navigator = LocalNavigator.currentOrThrow
             val screenModel = rememberScreenModel { component.tileRecognitionScreenModel }
             val state by screenModel.state.collectAsState()

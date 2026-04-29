@@ -16,6 +16,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             val component = AndroidAppComponent::class.create()
             Navigator(MahjongScreen(component))
+            val component = androidx.compose.runtime.remember { AndroidAppComponent::class.create() }
+            androidx.compose.runtime.CompositionLocalProvider(LocalAppComponent provides component) {
+                Navigator(MahjongScreen())
+            }
         }
     }
 }
@@ -24,5 +28,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppAndroidPreview() {
     val component = AndroidAppComponent::class.create()
-            Navigator(MahjongScreen(component))
+    androidx.compose.runtime.CompositionLocalProvider(LocalAppComponent provides component) {
+        Navigator(MahjongScreen())
+    }
 }

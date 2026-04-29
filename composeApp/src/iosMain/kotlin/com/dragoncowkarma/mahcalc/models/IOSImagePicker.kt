@@ -20,12 +20,17 @@ class IOSImagePicker : ImagePicker {
                 ) {
                     val image = didFinishPickingMediaWithInfo[UIImagePickerControllerOriginalImage] as? UIImage
                     if (image != null) {
-                        val imageData = UIImageJPEGRepresentation(image, 0.8)
-                        if (imageData != null) {
-                            val bytes = ByteArray(imageData.length.toInt())
-                            imageData.getBytes(bytes.refTo(0), imageData.length)
-                            onImagePicked(bytes)
-                        } else {
+                        try {
+                            val imageData = UIImageJPEGRepresentation(image, 0.8)
+                            if (imageData != null) {
+                                val bytes = ByteArray(imageData.length.toInt())
+                                imageData.getBytes(bytes.refTo(0), imageData.length)
+                                onImagePicked(bytes)
+                            } else {
+                                onImagePicked(null)
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                             onImagePicked(null)
                         }
                     } else {
@@ -55,11 +60,15 @@ class IOSImagePicker : ImagePicker {
                     val pickerController = UIImagePickerController()
                     pickerController.delegate = delegate
                     pickerController.sourceType = UIImagePickerControllerSourceType.UIImagePickerControllerSourceTypePhotoLibrary
-                    UIApplication.sharedApplication.keyWindow?.rootViewController?.presentViewController(
-                        pickerController,
-                        animated = true,
-                        completion = null
-                    )
+                    try {
+                        UIApplication.sharedApplication.keyWindow?.rootViewController?.presentViewController(
+                            pickerController,
+                            animated = true,
+                            completion = null
+                        )
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
             )
 
@@ -70,11 +79,15 @@ class IOSImagePicker : ImagePicker {
                     val pickerController = UIImagePickerController()
                     pickerController.delegate = delegate
                     pickerController.sourceType = UIImagePickerControllerSourceType.UIImagePickerControllerSourceTypeCamera
-                    UIApplication.sharedApplication.keyWindow?.rootViewController?.presentViewController(
-                        pickerController,
-                        animated = true,
-                        completion = null
-                    )
+                    try {
+                        UIApplication.sharedApplication.keyWindow?.rootViewController?.presentViewController(
+                            pickerController,
+                            animated = true,
+                            completion = null
+                        )
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
             )
 
@@ -88,11 +101,15 @@ class IOSImagePicker : ImagePicker {
             alertController.addAction(cameraAction)
             alertController.addAction(cancelAction)
 
-            UIApplication.sharedApplication.keyWindow?.rootViewController?.presentViewController(
-                alertController,
-                animated = true,
-                completion = null
-            )
+            try {
+                UIApplication.sharedApplication.keyWindow?.rootViewController?.presentViewController(
+                    alertController,
+                    animated = true,
+                    completion = null
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 }
