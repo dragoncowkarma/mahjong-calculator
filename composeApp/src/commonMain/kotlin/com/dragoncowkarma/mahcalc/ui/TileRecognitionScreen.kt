@@ -27,6 +27,8 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.dragoncowkarma.mahcalc.AppComponent
 import com.dragoncowkarma.mahcalc.models.ImageSource
+import com.dragoncowkarma.mahcalc.models.MahjongTile
+import com.dragoncowkarma.mahcalc.models.toKoreanDisplayString
 import com.dragoncowkarma.mahcalc.LocalAppComponent
 
 class TileRecognitionScreen : Screen {
@@ -97,15 +99,20 @@ class TileRecognitionScreen : Screen {
                         Spacer(modifier = Modifier.height(16.dp))
 
                         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start) {
-                            Text("Hand: ${currentState.handTiles}", style = MaterialTheme.typography.bodyLarge)
+                            val handDisplay = currentState.handTiles.map { MahjongTile(it) }.toKoreanDisplayString()
+                            Text("Hand: $handDisplay", style = MaterialTheme.typography.bodyLarge)
                             Spacer(modifier = Modifier.height(8.dp))
 
                             if (currentState.melds.isNotEmpty()) {
-                                Text("Melds: ${currentState.melds}", style = MaterialTheme.typography.bodyLarge)
+                                val meldsDisplay = currentState.melds.joinToString(" | ") { meld ->
+                                    meld.map { MahjongTile(it) }.toKoreanDisplayString()
+                                }
+                                Text("Melds: $meldsDisplay", style = MaterialTheme.typography.bodyLarge)
                                 Spacer(modifier = Modifier.height(8.dp))
                             }
 
-                            Text("Discarded: ${currentState.discardedTiles}", style = MaterialTheme.typography.bodyLarge)
+                            val discardedDisplay = currentState.discardedTiles.map { MahjongTile(it) }.toKoreanDisplayString()
+                            Text("Discarded: $discardedDisplay", style = MaterialTheme.typography.bodyLarge)
                         }
                     }
                 }
