@@ -5,6 +5,7 @@
     <KotlinVersion>2.1.0</KotlinVersion>
     <Targets>android, iosArm64, iosSimulatorArm64</Targets>
     <Architecture>MVVM/MVI with Voyager ScreenModel and Kotlin-Inject for Dependency Injection.</Architecture>
+    <AgentProtocol>AGENTS.md defines the strict Zero-Fragmentation protocol for all AI agent interactions.</AgentProtocol>
   </Meta>
 
   <Dependencies>
@@ -81,11 +82,11 @@
   </DataFlowAndState>
 
   <StrictConventions>
-    <Rule>Use Voyager for all cross-platform navigation and UI state management.</Rule>
-    <Rule>State must be handled exclusively by Voyager ScreenModel instances.</Rule>
-    <Rule>Inject dependencies via Kotlin-Inject; avoid reflection-based DI like Koin.</Rule>
-    <Rule>Zero-fragmentation: All UI, Navigation, and Logic must reside in commonMain.</Rule>
-    <Rule>Ban on expect/actual: Use interfaces and dependency injection for platform-specific APIs.</Rule>
-    <Rule>All shared assets (strings, images) must be in composeResources and accessed via Compose Multiplatform Resources API.</Rule>
+    <Rule>Zero-Fragmentation: 99.9% of code must reside in commonMain.</Rule>
+    <Rule>Navigation &amp; State: Exclusively Voyager Screen and ScreenModel.</Rule>
+    <Rule>Dependency Injection: Kotlin-Inject via KSP (compile-time safe).</Rule>
+    <Rule>Resources: Compose Multiplatform Resources in commonMain/composeResources.</Rule>
+    <Rule>Platform Abstraction: Interfaces + DI; no logic in expect/actual.</Rule>
+    <Rule>Context Maintenance: Mandatory read/write of SUMMARY.xml for every task.</Rule>
   </StrictConventions>
 </ProjectContext>

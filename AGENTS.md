@@ -1,54 +1,39 @@
-# AI Agent Instructions for Kotlin Multiplatform (KMP) Project
+# KMP Project Agent Protocol (AGENTS.md)
 
-## 1. Role and Context
-You are a strict, expert Kotlin Multiplatform (KMP) developer. Your ultimate goal is **Zero-Fragmentation** between platforms. You must write 99.9% of the code in the `commonMain` or `composeApp` module.
-Do not write platform-specific code (Android/iOS) unless completely unavoidable (e.g., setting up the absolute entry points like `MainActivity.kt` or `MainViewController.kt`).
+## 1. Role & Core Invariants (Always)
+1. **Primary Goal**: Maintain absolute **Zero-Fragmentation** between platforms.
+2. **Execution Rule**: Write 99.9% of code in `commonMain` or `composeApp`.
+3. **Never**: Write business logic, UI, or navigation in `androidApp` or `iosApp` modules.
+4. **Never**: Use `expect`/`actual` for high-level logic. Use Interfaces + `Kotlin-Inject` instead.
 
-## 2. Project Structure
-* `shared/` or `composeApp/`: The core of the project. **All UI, Navigation, Resources, and Business Logic must reside here.**
-* `androidApp/`: Contains ONLY `MainActivity` and native entry configuration. Do not add business logic or UI here.
-* `iosApp/`: Contains ONLY `iOSApp.swift` and `MainViewController`. Do not add business logic or UI here.
+## 2. Tech Stack (Strictly Enforced)
+1. **UI**: `Compose Multiplatform`
+2. **Navigation**: `Voyager` (`cafe.adriel.voyager:*`)
+3. **Asynchronous**: `Coroutines` & `Flow` (`kotlinx.coroutines`)
+4. **DI**: `Kotlin-Inject` (`me.tatarka.inject`)
+5. **Storage**: `Multiplatform Settings` (`com.russhwolf:multiplatform-settings`)
+6. **Serialization**: `kotlinx.serialization`
+7. **Resources**: `Compose Multiplatform Resources` (under `commonMain/composeResources`)
 
-## 3. Tech Stack & Libraries (Strictly Enforced)
-You must use the following multiplatform-only libraries. **NEVER use platform-specific libraries** like Android Navigation component, Android strings.xml, UIKit, or Hilt.
-* **UI:** Compose Multiplatform
-* **Navigation & UI State:** **Voyager** (`cafe.adriel.voyager:*`)
-* **Asynchronous:** Kotlin Coroutines & Flow (`kotlinx.coroutines`)
-* **Networking:** Ktor Client (`io.ktor:ktor-client-core`)
-* **Dependency Injection:** **Kotlin-Inject** (`me.tatarka.inject`)
-* **Local Storage / Key-Value:** **Multiplatform Settings** (`com.russhwolf:multiplatform-settings`)
-* **Serialization:** `kotlinx.serialization`
-* **Resources:** Compose Multiplatform Resources (org.jetbrains.compose.resources)
+## 3. When Starting a Task
+1. **Context Check**: Read `SUMMARY.xml` to grasp the latest project architecture and dependencies.
+2. **Validation**: Verify that the task can be implemented using the defined tech stack in `commonMain`.
+3. **Stop**: If a requirement forces platform-specific UI (e.g., `SwiftUI` or `XML Layouts`). Propose a shared `commonMain` abstraction instead.
 
-## 4. Architectural & Coding Guidelines
+## 4. When Writing Code
+1. **Location**: All files MUST reside in `commonMain/kotlin/...`.
+2. **Navigation**: Implement all screens via the Voyager `Screen` interface.
+3. **State**: Manage UI state exclusively via Voyager `ScreenModel`. **Never** use Android `ViewModel` or `LiveData`.
+4. **Resources**: Place all strings, drawables, and fonts in `commonMain/composeResources`. Access them via `stringResource()` or `painterResource()`.
+5. **Constraint**: If `android.*` or `platform.UIKit.*` imports appear in shared code, **STOP** and remove them. Use DI to bridge platform gaps.
 
-### A. Navigation & State Management (Voyager)
-* **Screens:** Implement all screens using Voyager's `Screen` interface.
-* **State:** Use Voyager's `ScreenModel` (or `StateScreenModel`) for UI state management. Do not use Android's `ViewModel` or `LiveData`.
-* **Routing:** Handle all navigation using Voyager's `Navigator`.
+## 5. Definition of Done
+1. **Cross-Platform**: The project compiles for both Android and iOS without platform-specific modifications.
+2. **No Leakage**: No new business logic or UI components exist in `androidApp/` or `iosApp/`.
+3. **Persistence**: `SUMMARY.xml` is updated with any new files, components, or architectural changes.
+4. **Standard**: Code follows the "Always" invariants defined in Section 1.
 
-### B. Dependency Injection (Kotlin-Inject + Voyager)
-* **Compile-time Safety:** We use Kotlin-Inject via KSP.
-* **Integration:** Inject dependencies directly into your `Screen` or `ScreenModel`. When providing a `ScreenModel`, ensure it is correctly instantiated and scoped within the Kotlin-Inject `@Component` so Voyager can manage its lifecycle via `rememberScreenModel()`.
-* **Platform Dependencies:** Pass platform-specific dependencies (like `Context` or `NSObject`) only at the root component initialization in `MainActivity` or `MainViewController`. Downstream code must use abstract interfaces.
-
-### C. Zero Platform Code Rule & Resources
-* **Ban on `expect`/`actual`:** Do NOT use the `expect`/`actual` pattern unless absolutely necessary for low-level OS APIs. Use Inversion of Control (Interfaces + Kotlin-Inject) instead.
-* **Resources:** All strings, drawables, and fonts must be placed in the `commonMain/composeResources` directory and accessed using `stringResource()`, `painterResource()`, etc. Do not use `res/` or `Assets.xcassets` for shared UI.
-
-### D. Local Storage (Multiplatform Settings)
-* Use `Settings` for simple key-value pairs (primitive types only). Store complex objects by serializing them to JSON via `kotlinx.serialization` first.
-
-## 5. Output and Code Generation Rules
-* **CommonMain First:** When asked to create a feature, generate ALL code (Screen, ScreenModel, UI, Logic) within `commonMain`.
-* **Strict Imports:** Actively check and remove imports starting with `android.*` or `platform.UIKit.*` in shared code.
-* **Complete Blocks:** Provide complete, working blocks of code. Do not leave abstract platform placeholders.
-
-## 6. Workflow & Context Management
-
-### A. Pre-Task Initialization
-* **Refer to `SUMMARY.xml`:** Before commencing any task, you MUST prioritize reading `SUMMARY.xml` to grasp the project's architecture and dependencies. This step is mandatory to eliminate redundant file system traversal and minimize operational overhead.
-
-### B. Post-Task Updates
-* **Update `SUMMARY.xml`:** Upon completing any code modification, file addition, deletion, or structural change, you MUST immediately update `SUMMARY.xml` with the latest changes. This is a critical requirement to maintain persistent project context and ensure seamless continuity for future operations.
-
+## 6. Escalation Rules
+1. **When Blocked**: If a native API (e.g., Camera, Bluetooth) is required and no common wrapper exists, stop and propose an interface in `commonMain`.
+2. **When Outdated**: If `SUMMARY.xml` does not match the current file structure, update `SUMMARY.xml` before proceeding with the task.
+3. **When Conflicts**: If a library update breaks the "Zero-Fragmentation" rule, revert and seek a multiplatform alternative.
