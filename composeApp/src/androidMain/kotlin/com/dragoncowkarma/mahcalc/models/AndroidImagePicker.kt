@@ -7,9 +7,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 
+import android.app.AlertDialog
+
 class AndroidImagePicker : ImagePicker {
     @Composable
-    override fun registerPicker(onImagePicked: (ByteArray?) -> Unit): (ImageSource) -> Unit {
+    override fun registerPicker(onImagePicked: (ByteArray?) -> Unit): () -> Unit {
         val context = LocalContext.current
         val contentResolver = remember { context.contentResolver }
 
@@ -39,11 +41,21 @@ class AndroidImagePicker : ImagePicker {
             }
         }
 
-        return { source ->
-            when (source) {
-                ImageSource.GALLERY -> galleryLauncher.launch("image/*")
-                ImageSource.CAMERA -> cameraLauncher.launch(null)
-            }
+        return {
+            val options = arrayOf("Gallery", "Camera")
+            AlertDialog.Builder(context)
+                .setTitle("Select Image Source")
+                .setItems(options) { dialog, which ->
+                    when (which) {
+                        0 -> galleryLauncher.launch("image/*")
+                        1 -> cameraLauncher.launch(null)
+                    }
+                    dialog.dismiss()
+                }
+                .setNegativeButton("Cancel") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
         }
     }
 }

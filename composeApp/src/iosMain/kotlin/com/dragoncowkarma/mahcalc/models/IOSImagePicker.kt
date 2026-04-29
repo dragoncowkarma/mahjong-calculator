@@ -11,7 +11,7 @@ import platform.darwin.NSObject
 class IOSImagePicker : ImagePicker {
     @OptIn(ExperimentalForeignApi::class)
     @Composable
-    override fun registerPicker(onImagePicked: (ByteArray?) -> Unit): (ImageSource) -> Unit {
+    override fun registerPicker(onImagePicked: (ByteArray?) -> Unit): () -> Unit {
         val delegate = remember {
             object : NSObject(), UIImagePickerControllerDelegateProtocol, UINavigationControllerDelegateProtocol {
                 override fun imagePickerController(
@@ -41,15 +41,55 @@ class IOSImagePicker : ImagePicker {
             }
         }
 
-        return { source ->
-            val pickerController = UIImagePickerController()
-            pickerController.delegate = delegate
-            pickerController.sourceType = when (source) {
-                ImageSource.GALLERY -> UIImagePickerControllerSourceType.UIImagePickerControllerSourceTypePhotoLibrary
-                ImageSource.CAMERA -> UIImagePickerControllerSourceType.UIImagePickerControllerSourceTypeCamera
-            }
+        return {
+            val alertController = UIAlertController.alertControllerWithTitle(
+                title = "Select Image Source",
+                message = null,
+                preferredStyle = UIAlertControllerStyleActionSheet
+            )
+
+            val galleryAction = UIAlertAction.actionWithTitle(
+                title = "Gallery",
+                style = UIAlertActionStyleDefault,
+                handler = { _ ->
+                    val pickerController = UIImagePickerController()
+                    pickerController.delegate = delegate
+                    pickerController.sourceType = UIImagePickerControllerSourceType.UIImagePickerControllerSourceTypePhotoLibrary
+                    UIApplication.sharedApplication.keyWindow?.rootViewController?.presentViewController(
+                        pickerController,
+                        animated = true,
+                        completion = null
+                    )
+                }
+            )
+
+            val cameraAction = UIAlertAction.actionWithTitle(
+                title = "Camera",
+                style = UIAlertActionStyleDefault,
+                handler = { _ ->
+                    val pickerController = UIImagePickerController()
+                    pickerController.delegate = delegate
+                    pickerController.sourceType = UIImagePickerControllerSourceType.UIImagePickerControllerSourceTypeCamera
+                    UIApplication.sharedApplication.keyWindow?.rootViewController?.presentViewController(
+                        pickerController,
+                        animated = true,
+                        completion = null
+                    )
+                }
+            )
+
+            val cancelAction = UIAlertAction.actionWithTitle(
+                title = "Cancel",
+                style = UIAlertActionStyleCancel,
+                handler = null
+            )
+
+            alertController.addAction(galleryAction)
+            alertController.addAction(cameraAction)
+            alertController.addAction(cancelAction)
+
             UIApplication.sharedApplication.keyWindow?.rootViewController?.presentViewController(
-                pickerController,
+                alertController,
                 animated = true,
                 completion = null
             )

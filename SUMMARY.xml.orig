@@ -72,7 +72,7 @@
     </Component>
     <Component name="ImagePicker" type="Interface">
       <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/models/ImagePicker.kt</Path>
-      <Responsibility>Platform-agnostic interface for picking images. Natively prompts the user (using Action Sheet on iOS and Dialog on Android) to choose between Gallery or Camera.</Responsibility>
+      <Responsibility>Platform-agnostic interface for picking images from Gallery or Camera.</Responsibility>
     </Component>
     <Component name="ImageBitmapDecoder" type="Interface">
       <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/models/ImageBitmapDecoder.kt</Path>

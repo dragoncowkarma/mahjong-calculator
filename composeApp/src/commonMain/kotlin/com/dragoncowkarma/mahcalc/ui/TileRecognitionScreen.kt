@@ -57,17 +57,12 @@ class TileRecognitionScreen(private val component: AppComponent) : Screen {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                    Button(onClick = { launchPicker(ImageSource.GALLERY) }) {
-                        Text("Gallery")
+                    Button(onClick = { launchPicker() }) {
+                        Text("Import Image")
                     }
-                    Button(onClick = { launchPicker(ImageSource.CAMERA) }) {
-                        Text("Camera")
+                    Button(onClick = { navigator.pop() }) {
+                        Text("Back")
                     }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(onClick = { navigator.pop() }) {
-                    Text("Back")
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))

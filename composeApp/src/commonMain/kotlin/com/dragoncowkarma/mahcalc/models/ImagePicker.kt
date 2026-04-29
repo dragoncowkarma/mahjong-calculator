@@ -4,5 +4,5 @@ import androidx.compose.runtime.Composable
 
 interface ImagePicker {
     @Composable
-    fun registerPicker(onImagePicked: (ByteArray?) -> Unit): (ImageSource) -> Unit
+    fun registerPicker(onImagePicked: (ByteArray?) -> Unit): () -> Unit
 }
