@@ -4,8 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import com.dragoncowkarma.mahcalc.ui.MahjongScreen
 import cafe.adriel.voyager.navigator.Navigator
 
 class MainActivity : ComponentActivity() {
@@ -13,14 +12,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
+        val component = AndroidAppComponent::class.create()
+
         setContent {
-            Navigator(MahjongScreen())
+            Navigator(MahjongScreen(component))
         }
     }
-}
-
-@Preview
-@Composable
-fun AppAndroidPreview() {
-    Navigator(MahjongScreen())
 }

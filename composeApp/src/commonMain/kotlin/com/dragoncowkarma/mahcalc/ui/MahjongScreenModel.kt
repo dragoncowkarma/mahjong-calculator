@@ -1,7 +1,8 @@
 package com.dragoncowkarma.mahcalc.ui
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import cafe.adriel.voyager.core.model.ScreenModel
+import cafe.adriel.voyager.core.model.screenModelScope
+import me.tatarka.inject.annotations.Inject
 import com.dragoncowkarma.mahcalc.calculator.MahjongCalculator
 import com.dragoncowkarma.mahcalc.calculator.ScoreCalculator
 import com.dragoncowkarma.mahcalc.models.AgariEvaluator
@@ -19,8 +20,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MahjongViewModel : ViewModel() {
-    private val detectionModel = TileDetectionModel()
+@Inject
+class MahjongScreenModel(private val detectionModel: TileDetectionModel) : ScreenModel {
 
     private val _isCalculating = MutableStateFlow(false)
     val isCalculating: StateFlow<Boolean> = _isCalculating.asStateFlow()
@@ -55,7 +56,7 @@ class MahjongViewModel : ViewModel() {
     fun processCameraFrame(frameData: ByteArray, width: Int, height: Int) {
         if (_isCalculating.value) return
 
-        viewModelScope.launch {
+        screenModelScope.launch {
             _isCalculating.value = true
             _resultState.value = null
 
