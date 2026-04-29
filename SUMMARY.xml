@@ -62,6 +62,22 @@
       <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/AppComponent.kt</Path>
       <Responsibility>The root DI component interface, implemented on each platform to provide dependencies like Platform and TileDetectionModel.</Responsibility>
     </Component>
+    <Component name="TileRecognitionScreen" type="Screen">
+      <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/ui/TileRecognitionScreen.kt</Path>
+      <Responsibility>Provides UI for picking images from Gallery or Camera, and displays spatial recognition of tiles categorized by Hand, Discards, and Melds.</Responsibility>
+    </Component>
+    <Component name="TileRecognitionScreenModel" type="ScreenModel">
+      <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/ui/TileRecognitionScreenModel.kt</Path>
+      <Responsibility>Manages state for image recognition and processes bounding boxes into spatial categories (Hand vs Discard vs Melds).</Responsibility>
+    </Component>
+    <Component name="ImagePicker" type="Interface">
+      <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/models/ImagePicker.kt</Path>
+      <Responsibility>Platform-agnostic interface for picking images from Gallery or Camera.</Responsibility>
+    </Component>
+    <Component name="ImageBitmapDecoder" type="Interface">
+      <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/models/ImageBitmapDecoder.kt</Path>
+      <Responsibility>Platform-agnostic interface for decoding byte arrays into ImageBitmap for UI preview.</Responsibility>
+    </Component>
   </CoreComponents>
 
   <PlatformIntegrations>
@@ -78,6 +94,7 @@
   <DataFlowAndState>
     <Description>UI state is held in Voyager ScreenModels using MutableStateFlow. Screens observe state via StateFlow.collectAsState(). User actions trigger ScreenModel methods that update state asynchronously using screenModelScope.</Description>
     <Route name="YakuListScreen">Added navigation from `MahjongScreen` to `YakuListScreen` via Voyager's `navigator.push(YakuListScreen())`.</Route>
+    <Route name="TileRecognitionScreen">Added navigation from `MahjongScreen` to `TileRecognitionScreen` via Voyager's `navigator.push(TileRecognitionScreen(component))`.</Route>
   </DataFlowAndState>
 
   <StrictConventions>

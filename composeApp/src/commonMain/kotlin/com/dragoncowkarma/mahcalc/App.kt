@@ -72,8 +72,16 @@ class MahjongScreen(private val component: AppComponent) : Screen {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Button(onClick = { navigator.push(YakuListScreen()) }) {
-                    Text("역 목록")
+                Row {
+                    Button(onClick = { navigator.push(YakuListScreen()) }) {
+                        Text("역 목록")
+                    }
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    Button(onClick = { navigator.push(com.dragoncowkarma.mahcalc.ui.TileRecognitionScreen(component)) }) {
+                        Text("Tile Recognition")
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
