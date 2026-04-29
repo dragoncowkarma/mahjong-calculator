@@ -14,7 +14,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            Navigator(MahjongScreen())
+            val component = AndroidAppComponent::class.create()
+            Navigator(MahjongScreen(component))
         }
     }
 }
@@ -22,5 +23,6 @@ class MainActivity : ComponentActivity() {
 @Preview
 @Composable
 fun AppAndroidPreview() {
-    Navigator(MahjongScreen())
+    val component = AndroidAppComponent::class.create()
+            Navigator(MahjongScreen(component))
 }

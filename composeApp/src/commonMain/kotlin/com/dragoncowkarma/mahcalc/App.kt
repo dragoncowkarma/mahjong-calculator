@@ -27,12 +27,12 @@ import com.dragoncowkarma.mahcalc.ui.TileCorrectionPanel
 /**
  * The main Voyager Screen for the Mahjong Calculator.
  */
-class MahjongScreen : Screen {
+class MahjongScreen(private val component: AppComponent) : Screen {
 
     @Composable
     override fun Content() {
         MaterialTheme {
-            val screenModel = rememberScreenModel { MahjongScreenModel() }
+            val screenModel = rememberScreenModel { component.mahjongScreenModel }
 
             val isCalculating by screenModel.isCalculating.collectAsState()
             val matchContext by screenModel.matchContext.collectAsState()
