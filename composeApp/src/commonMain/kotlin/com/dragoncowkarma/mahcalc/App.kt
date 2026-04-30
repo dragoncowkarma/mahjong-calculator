@@ -54,15 +54,6 @@ class MahjongScreen : Screen {
             ) {
                 Spacer(modifier = Modifier.height(16.dp))
 
-                GameStatePanel(
-                    context = matchContext,
-                    onApply = { newContext ->
-                        screenModel.updateMatchContext(newContext)
-                    }
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
                 // Mock "Simulate Detection" button since we don't have a real camera feed setup yet
                 Row {
                     Button(onClick = {
@@ -117,6 +108,15 @@ class MahjongScreen : Screen {
                 resultState?.let { score ->
                     ScoreResultDashboard(scoreResult = score)
                 }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                GameStatePanel(
+                    context = matchContext,
+                    onApply = { newContext ->
+                        screenModel.updateMatchContext(newContext)
+                    }
+                )
             }
         }
     }
