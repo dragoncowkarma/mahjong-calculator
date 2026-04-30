@@ -24,6 +24,8 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.dragoncowkarma.mahcalc.ui.GameStatePanel
 import com.dragoncowkarma.mahcalc.ui.MahjongScreenModel
 import com.dragoncowkarma.mahcalc.ui.ScoreResultDashboard
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import com.dragoncowkarma.mahcalc.ui.TileCorrectionPanel
 import com.dragoncowkarma.mahcalc.ui.YakuListScreen
 import com.dragoncowkarma.mahcalc.ui.YakuCalculationScreen
@@ -45,16 +47,18 @@ class MahjongScreen : Screen {
             val detectedTiles by screenModel.detectedTiles.collectAsState()
             val resultState by screenModel.resultState.collectAsState()
 
-            Column(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.background)
-                    .safeContentPadding()
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Spacer(modifier = Modifier.height(16.dp))
+            Box(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.background)
+                        .safeContentPadding()
+                        .fillMaxSize()
+                        .padding(bottom = 60.dp), // Provide space for GameStatePanel
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                // Mock "Simulate Detection" button since we don't have a real camera feed setup yet
+                    // Mock "Simulate Detection" button since we don't have a real camera feed setup yet
                 Row {
                     Button(onClick = {
                         // Pass dummy byte array to simulate detection
@@ -104,18 +108,19 @@ class MahjongScreen : Screen {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Score Result Dashboard
-                resultState?.let { score ->
-                    ScoreResultDashboard(scoreResult = score)
+                    // Score Result Dashboard
+                    resultState?.let { score ->
+                        ScoreResultDashboard(scoreResult = score)
+                    }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
-
+                // GameStatePanel floating at the bottom
                 GameStatePanel(
                     context = matchContext,
                     onApply = { newContext ->
                         screenModel.updateMatchContext(newContext)
-                    }
+                    },
+                    modifier = Modifier.align(Alignment.BottomCenter)
                 )
             }
         }
