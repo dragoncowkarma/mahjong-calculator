@@ -26,6 +26,7 @@ import com.dragoncowkarma.mahcalc.ui.MahjongScreenModel
 import com.dragoncowkarma.mahcalc.ui.ScoreResultDashboard
 import com.dragoncowkarma.mahcalc.ui.TileCorrectionPanel
 import com.dragoncowkarma.mahcalc.ui.YakuListScreen
+import com.dragoncowkarma.mahcalc.ui.YakuCalculationScreen
 
 /**
  * The main Voyager Screen for the Mahjong Calculator.
@@ -83,6 +84,12 @@ class MahjongScreen : Screen {
                     Button(onClick = { navigator.push(com.dragoncowkarma.mahcalc.ui.TileRecognitionScreen()) }) {
                         Text("Tile Recognition")
                     }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Button(onClick = { navigator.push(YakuCalculationScreen()) }) {
+                    Text("역 판별")
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))

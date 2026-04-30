@@ -43,6 +43,14 @@
       <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/ui/YakuListScreen.kt</Path>
       <Responsibility>Displays a categorized list of Japanese Mahjong Yakus in Korean.</Responsibility>
     </Component>
+    <Component name="YakuCalculationScreen" type="Screen">
+      <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/ui/YakuCalculationScreen.kt</Path>
+      <Responsibility>Provides UI for users to manually select tiles and verify valid Yakus based on the current hand configuration.</Responsibility>
+    </Component>
+    <Component name="YakuCalculationScreenModel" type="ScreenModel">
+      <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/ui/YakuCalculationScreenModel.kt</Path>
+      <Responsibility>Manages state for YakuCalculationScreen, holds selected tiles, performs validation, and uses MahjongCalculator to determine valid Yaku.</Responsibility>
+    </Component>
     <Component name="YakuData" type="Model">
       <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/models/YakuData.kt</Path>
       <Responsibility>Holds static hardcoded list of Mahjong Yakus (YakuInfo) and their descriptions in Korean.</Responsibility>
@@ -95,7 +103,8 @@
   <DataFlowAndState>
     <Description>UI state is held in Voyager ScreenModels using MutableStateFlow. Screens observe state via StateFlow.collectAsState(). User actions trigger ScreenModel methods that update state asynchronously using screenModelScope.</Description>
     <Route name="YakuListScreen">Added navigation from `MahjongScreen` to `YakuListScreen` via Voyager's `navigator.push(YakuListScreen())`.</Route>
-    <Route name="TileRecognitionScreen">Added navigation from `MahjongScreen` to `TileRecognitionScreen` via Voyager's `navigator.push(TileRecognitionScreen(component))`.</Route>
+    <Route name="TileRecognitionScreen">Added navigation from `MahjongScreen` to `TileRecognitionScreen` via Voyager's `navigator.push(TileRecognitionScreen())`.</Route>
+    <Route name="YakuCalculationScreen">Added navigation from `MahjongScreen` to `YakuCalculationScreen` via Voyager's `navigator.push(YakuCalculationScreen())`.</Route>
   </DataFlowAndState>
 
   <StrictConventions>
