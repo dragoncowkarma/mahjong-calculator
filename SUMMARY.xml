@@ -40,6 +40,10 @@
       <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/ui/MahjongScreenModel.kt</Path>
       <Responsibility>Manages UI state, coordinates hand detection via TileDetectionModel, and orchestrates score calculation using MahjongCalculator.</Responsibility>
     </Component>
+    <Component name="GameStatePanel" type="UI">
+      <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/ui/GameStatePanel.kt</Path>
+      <Responsibility>An inline Composable that allows users to configure the game state (Dealer, Tsumo, Riichi, Dora Count) directly from the main screen.</Responsibility>
+    </Component>
     <Component name="YakuListScreen" type="Screen">
       <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/ui/YakuListScreen.kt</Path>
       <Responsibility>Displays a categorized list of Japanese Mahjong Yakus in Korean.</Responsibility>

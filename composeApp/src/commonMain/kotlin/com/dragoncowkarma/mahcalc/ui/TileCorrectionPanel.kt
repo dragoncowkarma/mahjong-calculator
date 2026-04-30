@@ -58,7 +58,7 @@ fun TileCorrectionPanel(
     var selectedIndex by remember { mutableStateOf<Int?>(null) }
 
     Column(modifier = modifier.fillMaxWidth().padding(8.dp)) {
-        Text("Tap a tile to correct it:", fontWeight = FontWeight.Bold)
+        Text("수정할 패를 선택하세요:", fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(8.dp))
 
         // Current Tiles
@@ -80,7 +80,7 @@ fun TileCorrectionPanel(
         // Palette
         if (selectedIndex != null) {
             Spacer(modifier = Modifier.height(16.dp))
-            Text("Select replacement tile:", fontWeight = FontWeight.Bold)
+            Text("교체할 패를 선택하세요:", fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
 
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
