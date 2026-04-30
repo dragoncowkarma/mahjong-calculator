@@ -5,6 +5,8 @@ import cafe.adriel.voyager.navigator.Navigator
 
 
 fun MainViewController() = ComposeUIViewController {
-    val component = createIosComponent()
-    Navigator(MahjongScreen(component))
+    val component = androidx.compose.runtime.remember { createIosComponent() }
+    androidx.compose.runtime.CompositionLocalProvider(LocalAppComponent provides component) {
+        Navigator(MahjongScreen())
+    }
 }
