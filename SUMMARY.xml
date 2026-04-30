@@ -13,6 +13,7 @@
     <Package name="Kotlin-Inject" purpose="Compile-time dependency injection using KSP for zero-reflection DI."/>
     <Package name="Compose Multiplatform" purpose="Shared UI framework for Android and iOS using Jetpack Compose syntax."/>
     <Package name="Ktor" purpose="Not explicitly in use for networking yet, but common in KMP stacks (absent from current libs.versions.toml)."/>
+    <Package name="Kotlinx-Coroutines-Test" purpose="Provides unit testing APIs (runTest, StandardTestDispatcher) for suspending functions and Voyager ScreenModels."/>
   </Dependencies>
 
   <ProjectStructure>
