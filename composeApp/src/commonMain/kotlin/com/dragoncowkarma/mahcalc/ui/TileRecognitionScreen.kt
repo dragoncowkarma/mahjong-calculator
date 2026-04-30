@@ -1,8 +1,10 @@
 package com.dragoncowkarma.mahcalc.ui
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +22,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
@@ -91,11 +97,42 @@ class TileRecognitionScreen : Screen {
                         CircularProgressIndicator()
                     }
                     is TileRecognitionState.ResultList -> {
-                        Image(
-                            bitmap = currentState.image,
-                            contentDescription = "Preview",
-                            modifier = Modifier.fillMaxWidth().height(200.dp)
-                        )
+                        Box(modifier = Modifier.fillMaxWidth().height(200.dp)) {
+                            Image(
+                                bitmap = currentState.image,
+                                contentDescription = "Preview",
+                                modifier = Modifier.fillMaxSize()
+                            )
+                            Canvas(modifier = Modifier.fillMaxSize()) {
+                                val canvasWidth = size.width
+                                val canvasHeight = size.height
+                                val imageWidth = currentState.image.width.toFloat()
+                                val imageHeight = currentState.image.height.toFloat()
+
+                                val scaleX = canvasWidth / imageWidth
+                                val scaleY = canvasHeight / imageHeight
+                                val scale = minOf(scaleX, scaleY)
+
+                                val drawWidth = imageWidth * scale
+                                val drawHeight = imageHeight * scale
+                                val offsetX = (canvasWidth - drawWidth) / 2f
+                                val offsetY = (canvasHeight - drawHeight) / 2f
+
+                                currentState.boundingBoxes.forEach { box ->
+                                    val mappedX = offsetX + (box.x * scale)
+                                    val mappedY = offsetY + (box.y * scale)
+                                    val mappedWidth = box.width * scale
+                                    val mappedHeight = box.height * scale
+
+                                    drawRect(
+                                        color = Color.Red,
+                                        topLeft = Offset(mappedX, mappedY),
+                                        size = Size(mappedWidth, mappedHeight),
+                                        style = Stroke(width = 3.dp.toPx())
+                                    )
+                                }
+                            }
+                        }
                         Spacer(modifier = Modifier.height(16.dp))
 
                         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start) {
