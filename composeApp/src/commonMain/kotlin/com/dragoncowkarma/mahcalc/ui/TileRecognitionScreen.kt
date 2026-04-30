@@ -61,15 +61,15 @@ class TileRecognitionScreen : Screen {
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text("Tile Recognition", style = MaterialTheme.typography.headlineMedium)
+                Text("패 인식", style = MaterialTheme.typography.headlineMedium)
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                     Button(onClick = { launchPicker() }) {
-                        Text("Import Image")
+                        Text("이미지 불러오기")
                     }
                     Button(onClick = { navigator.pop() }) {
-                        Text("Back")
+                        Text("뒤로")
                     }
                 }
 
@@ -77,15 +77,15 @@ class TileRecognitionScreen : Screen {
 
                 when (val currentState = state) {
                     is TileRecognitionState.Idle -> {
-                        Text("Select an image to analyze.", style = MaterialTheme.typography.bodyLarge)
+                        Text("분석할 이미지를 선택하세요.", style = MaterialTheme.typography.bodyLarge)
                     }
                     is TileRecognitionState.Loading -> {
                         CircularProgressIndicator()
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text("Analyzing...", style = MaterialTheme.typography.bodyLarge)
+                        Text("분석 중...", style = MaterialTheme.typography.bodyLarge)
                     }
                     is TileRecognitionState.Error -> {
-                        Text("Error: ${currentState.message}", color = MaterialTheme.colorScheme.error)
+                        Text("오류: ${currentState.message}", color = MaterialTheme.colorScheme.error)
                     }
                     is TileRecognitionState.ImagePreview -> {
                         Image(
@@ -137,19 +137,19 @@ class TileRecognitionScreen : Screen {
 
                         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start) {
                             val handDisplay = currentState.handTiles.map { MahjongTile(it) }.toKoreanDisplayString()
-                            Text("Hand: $handDisplay", style = MaterialTheme.typography.bodyLarge)
+                            Text("손패: $handDisplay", style = MaterialTheme.typography.bodyLarge)
                             Spacer(modifier = Modifier.height(8.dp))
 
                             if (currentState.melds.isNotEmpty()) {
                                 val meldsDisplay = currentState.melds.joinToString(" | ") { meld ->
                                     meld.map { MahjongTile(it) }.toKoreanDisplayString()
                                 }
-                                Text("Melds: $meldsDisplay", style = MaterialTheme.typography.bodyLarge)
+                                Text("울음패(부로): $meldsDisplay", style = MaterialTheme.typography.bodyLarge)
                                 Spacer(modifier = Modifier.height(8.dp))
                             }
 
                             val discardedDisplay = currentState.discardedTiles.map { MahjongTile(it) }.toKoreanDisplayString()
-                            Text("Discarded: $discardedDisplay", style = MaterialTheme.typography.bodyLarge)
+                            Text("버림패: $discardedDisplay", style = MaterialTheme.typography.bodyLarge)
                         }
                     }
                 }

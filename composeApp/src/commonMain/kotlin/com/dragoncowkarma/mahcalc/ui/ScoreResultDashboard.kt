@@ -30,11 +30,11 @@ import androidx.compose.ui.unit.dp
 import com.dragoncowkarma.mahcalc.models.ScoreResult
 
 fun getLimitName(han: Int, fu: Int): String? {
-    if (han >= 13) return "Yakuman"
-    if (han >= 11) return "Sanbaiman"
-    if (han >= 8) return "Baiman"
-    if (han >= 6) return "Haneman"
-    if (han >= 5 || (han == 4 && fu >= 40) || (han == 3 && fu >= 70)) return "Mangan"
+    if (han >= 13) return "역만"
+    if (han >= 11) return "3배만"
+    if (han >= 8) return "배만"
+    if (han >= 6) return "하네만"
+    if (han >= 5 || (han == 4 && fu >= 40) || (han == 3 && fu >= 70)) return "만관"
     return null
 }
 
@@ -60,14 +60,14 @@ fun ScoreResultDashboard(scoreResult: ScoreResult, modifier: Modifier = Modifier
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = "Score Result",
+                text = "계산 결과",
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Text(text = "Han: ${scoreResult.totalHan} | Fu: ${scoreResult.totalFu}", style = MaterialTheme.typography.titleMedium)
+            Text(text = "판: ${scoreResult.totalHan} | 부: ${scoreResult.totalFu}", style = MaterialTheme.typography.titleMedium)
 
             val limitName = getLimitName(scoreResult.totalHan, scoreResult.totalFu)
             AnimatedVisibility(
@@ -87,12 +87,12 @@ fun ScoreResultDashboard(scoreResult: ScoreResult, modifier: Modifier = Modifier
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(text = "Points: $animatedPoints", style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.ExtraBold)
+            Text(text = "점수: $animatedPoints", style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.ExtraBold)
 
             Spacer(modifier = Modifier.height(16.dp))
 
             if (scoreResult.yakuList.isNotEmpty()) {
-                Text(text = "Yaku:", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                Text(text = "역:", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 LazyColumn(modifier = Modifier.weight(1f, fill = false)) {
                     items(scoreResult.yakuList) { yaku ->
                         Text(text = "• $yaku", style = MaterialTheme.typography.bodyMedium)

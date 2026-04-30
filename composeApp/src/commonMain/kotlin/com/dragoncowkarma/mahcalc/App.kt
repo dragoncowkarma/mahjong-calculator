@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material3.Button
@@ -21,9 +22,11 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.dragoncowkarma.mahcalc.ui.ContextModal
+import com.dragoncowkarma.mahcalc.ui.GameStatePanel
 import com.dragoncowkarma.mahcalc.ui.MahjongScreenModel
 import com.dragoncowkarma.mahcalc.ui.ScoreResultDashboard
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import com.dragoncowkarma.mahcalc.ui.TileCorrectionPanel
 import com.dragoncowkarma.mahcalc.ui.YakuListScreen
 import com.dragoncowkarma.mahcalc.ui.YakuCalculationScreen
@@ -45,30 +48,24 @@ class MahjongScreen : Screen {
             val detectedTiles by screenModel.detectedTiles.collectAsState()
             val resultState by screenModel.resultState.collectAsState()
 
-            var showContextModal by remember { mutableStateOf(false) }
+            Box(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.background)
+                        .safeContentPadding()
+                        .fillMaxSize()
+                        .padding(bottom = 60.dp), // Provide space for GameStatePanel
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Spacer(modifier = Modifier.height(16.dp))
 
-            Column(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.background)
-                    .safeContentPadding()
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Mock "Simulate Detection" button since we don't have a real camera feed setup yet
+                    // Mock "Simulate Detection" button since we don't have a real camera feed setup yet
                 Row {
                     Button(onClick = {
                         // Pass dummy byte array to simulate detection
                         screenModel.processCameraFrame(ByteArray(0), 1080, 1920)
                     }, enabled = !isCalculating) {
-                        Text("Simulate Detection")
-                    }
-
-                    Spacer(modifier = Modifier.width(16.dp))
-
-                    Button(onClick = { showContextModal = true }) {
-                        Text("Game State")
+                        Text("인식 시뮬레이션")
                     }
                 }
 
@@ -82,7 +79,7 @@ class MahjongScreen : Screen {
                     Spacer(modifier = Modifier.width(16.dp))
 
                     Button(onClick = { navigator.push(com.dragoncowkarma.mahcalc.ui.TileRecognitionScreen()) }) {
-                        Text("Tile Recognition")
+                        Text("패 인식")
                     }
                 }
 
@@ -107,24 +104,24 @@ class MahjongScreen : Screen {
                         }
                     )
                 } else if (!isCalculating) {
-                    Text("No tiles detected. Simulate detection to begin.", style = MaterialTheme.typography.bodyMedium)
+                    Text("인식된 패가 없습니다. 인식 시뮬레이션을 시작하세요.", style = MaterialTheme.typography.bodyMedium)
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Score Result Dashboard
-                resultState?.let { score ->
-                    ScoreResultDashboard(scoreResult = score)
+                    // Score Result Dashboard
+                    resultState?.let { score ->
+                        ScoreResultDashboard(scoreResult = score)
+                    }
                 }
-            }
 
-            if (showContextModal) {
-                ContextModal(
+                // GameStatePanel floating at the bottom
+                GameStatePanel(
                     context = matchContext,
                     onApply = { newContext ->
                         screenModel.updateMatchContext(newContext)
                     },
-                    onDismissRequest = { showContextModal = false }
+                    modifier = Modifier.align(Alignment.BottomCenter).navigationBarsPadding()
                 )
             }
         }
