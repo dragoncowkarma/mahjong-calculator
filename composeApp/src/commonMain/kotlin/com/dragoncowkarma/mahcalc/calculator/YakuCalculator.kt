@@ -21,69 +21,76 @@ object YakuCalculator {
 
         // Yakuman checks
         if (isKokushi) {
-            yakuList.add("Kokushi Musou")
+            yakuList.add("국사무쌍")
             totalHan += 13
             return Pair(yakuList, totalHan)
         }
 
         if (isSuuankou(melds)) {
-            yakuList.add("Suuankou")
+            yakuList.add("사안커")
             totalHan += 13
             return Pair(yakuList, totalHan)
         }
 
         if (isDaisangen(melds)) {
-            yakuList.add("Daisangen")
+            yakuList.add("대삼원")
             totalHan += 13
             return Pair(yakuList, totalHan)
         }
 
         if (isTsuuiisou(melds)) {
-            yakuList.add("Tsuuiisou")
+            yakuList.add("자일색")
             totalHan += 13
             return Pair(yakuList, totalHan)
         }
 
         // Standard Yaku
         if (context.isRiichi) {
-            yakuList.add("Riichi")
+            yakuList.add("리치")
             totalHan += 1
         }
 
         if (context.isTsumo) { // Assuming fully closed hand for now
-            yakuList.add("Menzen Tsumo")
+            yakuList.add("멘젠쯔모")
             totalHan += 1
         }
 
         if (isTanyao(melds, isChiitoitsu)) {
-            yakuList.add("Tanyao")
+            yakuList.add("탕야오")
             totalHan += 1
         }
 
         if (!isChiitoitsu && isPinfu(melds, waitType)) {
-            yakuList.add("Pinfu")
+            yakuList.add("핑후")
             totalHan += 1
         }
 
         if (isChiitoitsu) {
-            yakuList.add("Chiitoitsu")
+            yakuList.add("치또이츠")
             totalHan += 2
         }
 
         val yakuhaiCount = countYakuhai(melds)
         if (yakuhaiCount > 0) {
-            yakuList.add("Yakuhai")
+            for (i in 0 until yakuhaiCount) {
+                yakuList.add("역패")
+            }
             totalHan += yakuhaiCount
         }
 
         if (isSanankou(melds)) {
-            yakuList.add("Sanankou")
+            yakuList.add("산안커")
             totalHan += 2
         }
 
         if (isToitoi(melds)) {
-            yakuList.add("Toitoi")
+            yakuList.add("또이또이")
             totalHan += 2
+        }
+
+        if (isSanshokuDoujun(melds)) {
+            yakuList.add("산쇼쿠도쥰 (삼색동순)")
+            totalHan += 2 // Assuming closed for now
         }
 
         return Pair(yakuList, totalHan)
@@ -180,5 +187,30 @@ object YakuCalculator {
             }
         }
         return true
+    }
+
+    private fun isSanshokuDoujun(melds: List<Meld>): Boolean {
+        val sequences = melds.filter { it.type == 1 }
+        if (sequences.size < 3) return false
+
+        // Extract the lowest number of each sequence (1-9) and its suit
+        // Suit: Man(0-8), Pin(9-17), Sou(18-26)
+        val seqInfo = sequences.map { meld ->
+            val startTile = meld.tiles.minOrNull() ?: 0
+            val number = (startTile % 9) + 1
+            val suit = startTile / 9 // 0=Man, 1=Pin, 2=Sou
+            Pair(number, suit)
+        }
+
+        // Check if there are 3 sequences with the same number but different suits (0, 1, and 2)
+        val groupedByNumber = seqInfo.groupBy { it.first }
+        for ((_, group) in groupedByNumber) {
+            val suits = group.map { it.second }.toSet()
+            if (suits.contains(0) && suits.contains(1) && suits.contains(2)) {
+                return true
+            }
+        }
+
+        return false
     }
 }
