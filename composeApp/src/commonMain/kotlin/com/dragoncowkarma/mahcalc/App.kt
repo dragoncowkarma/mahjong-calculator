@@ -59,18 +59,6 @@ class MahjongScreen : Screen {
                 ) {
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Mock "Simulate Detection" button since we don't have a real camera feed setup yet
-                Row {
-                    Button(onClick = {
-                        // Pass dummy byte array to simulate detection
-                        screenModel.processCameraFrame(ByteArray(0), 1080, 1920)
-                    }, enabled = !isCalculating) {
-                        Text("인식 시뮬레이션")
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
                 Row {
                     Button(onClick = { navigator.push(YakuListScreen()) }) {
                         Text("역 목록")
@@ -104,7 +92,7 @@ class MahjongScreen : Screen {
                         }
                     )
                 } else if (!isCalculating) {
-                    Text("인식된 패가 없습니다. 인식 시뮬레이션을 시작하세요.", style = MaterialTheme.typography.bodyMedium)
+                    Text("인식된 패가 없습니다.", style = MaterialTheme.typography.bodyMedium)
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))

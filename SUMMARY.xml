@@ -38,7 +38,7 @@
   <CoreComponents>
     <Component name="MahjongScreenModel" type="ScreenModel">
       <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/ui/MahjongScreenModel.kt</Path>
-      <Responsibility>Manages UI state, coordinates hand detection via TileDetectionModel, and orchestrates score calculation using MahjongCalculator.</Responsibility>
+      <Responsibility>Manages UI state and orchestrates score calculation using MahjongCalculator. The simulated hand detection logic (processCameraFrame) has been removed.</Responsibility>
     </Component>
     <Component name="GameStatePanel" type="UI">
       <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/ui/GameStatePanel.kt</Path>
