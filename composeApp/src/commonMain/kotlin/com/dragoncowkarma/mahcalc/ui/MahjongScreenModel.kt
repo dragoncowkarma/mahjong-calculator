@@ -55,41 +55,6 @@ class MahjongScreenModel(
         }
     }
 
-    fun processCameraFrame(frameData: ByteArray, width: Int, height: Int) {
-        if (_isCalculating.value) return
-
-        screenModelScope.launch {
-            _isCalculating.value = true
-            _resultState.value = null
-
-            // Offload heavy processing to Default dispatcher
-            val result = withContext(Dispatchers.Default) {
-                try {
-                    // 1. Use mock bounding boxes (real detection model would be platform-specific)
-                    val rawBoxes = tileDetectionModel.detect(frameData, width, height)
-
-                    // 2. Filter boxes with Non-Maximum Suppression (NMS)
-                    val filteredBoxes = nonMaximumSuppression(rawBoxes, iouThreshold = 0.5f)
-
-                    // 3. Run SpatialTileSorter
-                    val tileIds = SpatialTileSorter.sortToTileIds(filteredBoxes)
-
-                    tileIds
-                } catch (e: Exception) {
-                    IntArray(0)
-                }
-            }
-
-            _detectedTiles.value = result.map { MahjongTile(it) }
-
-            if (result.size == 14) {
-                calculateScore(result)
-            }
-
-            _isCalculating.value = false
-        }
-    }
-
     private fun calculateScore(hand: IntArray) {
         if (hand.size != 14) {
             _resultState.value = null
