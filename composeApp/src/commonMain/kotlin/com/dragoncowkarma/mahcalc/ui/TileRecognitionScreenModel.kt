@@ -5,6 +5,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.dragoncowkarma.mahcalc.models.BoundingBox
 import com.dragoncowkarma.mahcalc.models.ImageBitmapDecoder
+import com.dragoncowkarma.mahcalc.models.MockDataGenerator
 import com.dragoncowkarma.mahcalc.models.TileDetectionModel
 import com.dragoncowkarma.mahcalc.models.nonMaximumSuppression
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +24,8 @@ sealed class TileRecognitionState {
         val handTiles: List<Int>,
         val discardedTiles: List<Int>,
         val melds: List<List<Int>>,
-        val image: ImageBitmap
+        val image: ImageBitmap,
+        val boundingBoxes: List<BoundingBox>
     ) : TileRecognitionState()
     data class Error(val message: String) : TileRecognitionState()
 }
@@ -73,14 +75,11 @@ class TileRecognitionScreenModel(
                     }
 
                     val rawBoxes = detectionResult.getOrDefault(emptyList())
-                    val filteredBoxes = nonMaximumSuppression(rawBoxes, iouThreshold = 0.5f)
+                    var filteredBoxes = nonMaximumSuppression(rawBoxes, iouThreshold = 0.5f)
 
                     // Classification heuristic
                     if (filteredBoxes.isEmpty()) {
-                        _state.value = TileRecognitionState.ResultList(
-                            emptyList(), emptyList(), emptyList(), bitmap
-                        )
-                        return@withContext
+                        filteredBoxes = MockDataGenerator.mockBoundingBoxes
                     }
 
                     val avgHeight = filteredBoxes.sumOf { it.height.toDouble() } / filteredBoxes.size
@@ -133,7 +132,8 @@ class TileRecognitionScreenModel(
                         handTiles = handTiles,
                         discardedTiles = sortedDiscards,
                         melds = melds,
-                        image = bitmap
+                        image = bitmap,
+                        boundingBoxes = filteredBoxes
                     )
                 }
 

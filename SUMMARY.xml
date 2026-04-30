@@ -65,11 +65,11 @@
     </Component>
     <Component name="TileRecognitionScreen" type="Screen">
       <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/ui/TileRecognitionScreen.kt</Path>
-      <Responsibility>Provides UI for picking images from Gallery or Camera, and displays spatial recognition of tiles categorized by Hand, Discards, and Melds.</Responsibility>
+      <Responsibility>Provides UI for picking images from Gallery or Camera, and displays spatial recognition of tiles categorized by Hand, Discards, and Melds. Renders visual bounding boxes (overlay) mapped correctly to the displayed image scale using Canvas.</Responsibility>
     </Component>
     <Component name="TileRecognitionScreenModel" type="ScreenModel">
       <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/ui/TileRecognitionScreenModel.kt</Path>
-      <Responsibility>Manages state for image recognition and processes bounding boxes into spatial categories (Hand vs Discard vs Melds).</Responsibility>
+      <Responsibility>Manages state for image recognition, processes bounding boxes into spatial categories (Hand vs Discard vs Melds), explicitly returns box coordinate data for the UI, and falls back to dummy MockDataGenerator data if detection fails or is empty.</Responsibility>
     </Component>
     <Component name="ImagePicker" type="Interface">
       <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/models/ImagePicker.kt</Path>
