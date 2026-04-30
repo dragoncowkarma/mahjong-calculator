@@ -108,10 +108,10 @@ class YakuCalculationScreenModel : ScreenModel {
 
     private fun calculateHanFromYakuNames(yakuList: List<String>, doraCount: Int): Int {
         var han = 0
-        val twoHanYaku = setOf("Toitoi", "Sanankou", "Sankantsu", "Shousangen", "Honrouto", "Chanta", "Ittsu", "Sanshoku Doujun", "Sanshoku Doukou", "Chiitoitsu")
-        val threeHanYaku = setOf("Honitsu", "Junchan", "Ryanpeikou")
-        val sixHanYaku = setOf("Chinitsu")
-        val yakuman = setOf("Kokushi Musou", "Suuankou", "Daisangen", "Shousuushii", "Daisuushii", "Tsuuiisou", "Chinrouto", "Ryuuiisou", "Kyuuren Poutou", "Sukantsu", "Tenhou", "Chiihou")
+        val twoHanYaku = setOf("또이또이", "산안커", "산깡쯔", "소삼원", "혼로토", "챤타", "잇키츠칸 (일기통관)", "산쇼쿠도쥰 (삼색동순)", "산쇼쿠도코 (삼색동각)", "치또이츠")
+        val threeHanYaku = setOf("혼일색", "준챤타", "량페코")
+        val sixHanYaku = setOf("청일색")
+        val yakuman = setOf("국사무쌍", "사안커", "대삼원", "소사희", "대사희", "자일색", "청노두", "녹일색", "구련보등", "스깡쯔 (사깡쯔)", "천화", "지화")
 
         for (yaku in yakuList) {
             if (yakuman.contains(yaku)) return 13
@@ -119,7 +119,7 @@ class YakuCalculationScreenModel : ScreenModel {
                 in twoHanYaku -> 2
                 in threeHanYaku -> 3
                 in sixHanYaku -> 6
-                else -> 1
+                else -> 1 // 1 Han yaku: 리치, 멘젠쯔모, 탕야오, 핑후, 역패, 일발, 등
             }
         }
 

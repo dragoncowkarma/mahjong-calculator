@@ -25,9 +25,9 @@ class MahjongCalculatorTest {
         val context = MatchContext(isRiichi = true, isTsumo = false)
         val (yaku, fu) = MahjongCalculator.calculate(hand, winningTile = 22, context = context)
 
-        assertTrue(yaku.contains("Riichi"))
-        assertTrue(yaku.contains("Tanyao"))
-        assertTrue(yaku.contains("Pinfu"))
+        assertTrue(yaku.contains("리치"))
+        assertTrue(yaku.contains("탕야오"))
+        assertTrue(yaku.contains("핑후"))
         assertEquals(30, fu) // Pinfu Ron is 30 fu
     }
 
@@ -39,7 +39,7 @@ class MahjongCalculatorTest {
         val context = MatchContext()
         val (yaku, fu) = MahjongCalculator.calculate(hand, winningTile = 33, context = context)
 
-        assertTrue(yaku.contains("Kokushi Musou"))
+        assertTrue(yaku.contains("국사무쌍"))
         assertEquals(0, fu) // Yakuman has 0 base fu representation here
     }
 
@@ -51,9 +51,9 @@ class MahjongCalculatorTest {
         val context = MatchContext(isTsumo = true)
         val (yaku, fu) = MahjongCalculator.calculate(hand, winningTile = 25, context = context)
 
-        assertTrue(yaku.contains("Chiitoitsu"))
-        assertTrue(yaku.contains("Tanyao"))
-        assertTrue(yaku.contains("Menzen Tsumo"))
+        assertTrue(yaku.contains("치또이츠"))
+        assertTrue(yaku.contains("탕야오"))
+        assertTrue(yaku.contains("멘젠쯔모"))
         assertEquals(25, fu) // Chiitoitsu is exactly 25 fu
     }
 
@@ -72,7 +72,7 @@ class MahjongCalculatorTest {
         val (yaku, fu) = MahjongCalculator.calculate(hand, winningTile = 32, context = context)
 
         // It is actually Suuankou if closed Tsumo!
-        assertTrue(yaku.contains("Suuankou"))
+        assertTrue(yaku.contains("사안커"))
     }
 
     @Test
