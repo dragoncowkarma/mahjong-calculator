@@ -88,6 +88,24 @@ class ScoreCalculatorTest {
     }
 
     @Test
+    fun testBaimanNonDealerRon() {
+        val context = MatchContext(isDealer = false, isTsumo = false)
+        val result = ScoreCalculator.calculateScore(han = 8, fu = 30, context = context)
+        // Base = 4000
+        // 4000 * 4 = 16000
+        assertEquals(16000, result.pointsToReceive)
+    }
+
+    @Test
+    fun testSanbaimanDealerRon() {
+        val context = MatchContext(isDealer = true, isTsumo = false)
+        val result = ScoreCalculator.calculateScore(han = 11, fu = 30, context = context)
+        // Base = 6000
+        // 6000 * 6 = 36000
+        assertEquals(36000, result.pointsToReceive)
+    }
+
+    @Test
     fun testYakumanNonDealerRon() {
         val context = MatchContext(isDealer = false, isTsumo = false)
         val result = ScoreCalculator.calculateScore(han = 13, fu = 0, context = context)
@@ -105,5 +123,14 @@ class ScoreCalculatorTest {
         // Each pays: roundUp(32000) = 32000
         // Total = 96000
         assertEquals(96000, result.pointsToReceive)
+    }
+
+    @Test
+    fun test0FuOutputs0Points() {
+        // Since yakumans handle han=13, a scenario with han < 5 and fu=0 is technically an error state from FuCalculator,
+        // but ScoreCalculator handles it smoothly by yielding 0 points rather than crashing.
+        val context = MatchContext(isDealer = false, isTsumo = false)
+        val result = ScoreCalculator.calculateScore(han = 1, fu = 0, context = context)
+        assertEquals(0, result.pointsToReceive)
     }
 }

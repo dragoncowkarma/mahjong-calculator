@@ -92,4 +92,33 @@ class AgariEvaluatorTest {
         )
         assertFalse(AgariEvaluator.isAgari(hand), "Sequence wrapping suits should be invalid")
     }
+
+
+    @Test
+    fun testInvalidHandNotEnoughPairs() {
+        // A hand with all sequences and triplets but NO pair.
+        // E.g. 4 sequences and 2 single tiles.
+        val hand = intArrayOf(
+            0, 1, 2, // 123m
+            9, 10, 11, // 123p
+            18, 19, 20, // 123s
+            27, 27, 27, // East triplet
+            31, 32 // Two singles: Haku, Hatsu
+        )
+        assertFalse(AgariEvaluator.isAgari(hand), "Hand without a pair should be invalid")
+    }
+
+    @Test
+    fun testValidHandWithIdenticalMelds() {
+        // Iipeikou shape: 2 identical sequences
+        val hand = intArrayOf(
+            1, 2, 3, // 234m
+            1, 2, 3, // 234m
+            13, 14, 15, // 567p
+            27, 27, 27, // East
+            33, 33 // Red pair
+        )
+        assertTrue(AgariEvaluator.isAgari(hand), "Iipeikou hand should be valid")
+    }
+
 }
