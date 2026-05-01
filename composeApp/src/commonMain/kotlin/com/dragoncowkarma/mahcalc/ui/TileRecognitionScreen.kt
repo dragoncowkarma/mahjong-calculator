@@ -15,8 +15,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -39,6 +44,7 @@ import com.dragoncowkarma.mahcalc.LocalAppComponent
 
 class TileRecognitionScreen : Screen {
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
         MaterialTheme {
@@ -53,29 +59,32 @@ class TileRecognitionScreen : Screen {
                 screenModel.processImage(bytes)
             }
 
-            Column(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.background)
-                    .safeContentPadding()
-                    .fillMaxSize()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text("패 인식", style = MaterialTheme.typography.headlineMedium)
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                    Button(onClick = { launchPicker() }) {
-                        Text("이미지 불러오기")
-                    }
-                    Button(onClick = { navigator.pop() }) {
-                        Text("뒤로")
-                    }
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        title = { Text("패 인식") },
+                        navigationIcon = {
+                            IconButton(onClick = { navigator.pop() }) {
+                                Text("< 뒤로가기")
+                            }
+                        },
+                        actions = {
+                            TextButton(onClick = { launchPicker() }) {
+                                Text("이미지 불러오기")
+                            }
+                        }
+                    )
                 }
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                when (val currentState = state) {
+            ) { paddingValues ->
+                Column(
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.background)
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    when (val currentState = state) {
                     is TileRecognitionState.Idle -> {
                         Text("분석할 이미지를 선택하세요.", style = MaterialTheme.typography.bodyLarge)
                     }
@@ -156,4 +165,5 @@ class TileRecognitionScreen : Screen {
             }
         }
     }
+}
 }
