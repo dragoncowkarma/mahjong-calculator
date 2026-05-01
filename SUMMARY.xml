@@ -112,6 +112,17 @@
     <Route name="YakuCalculationScreen">Added navigation from `MahjongScreen` to `YakuCalculationScreen` via Voyager's `navigator.push(YakuCalculationScreen())`.</Route>
   </DataFlowAndState>
 
+  <Documentation>
+    <Description>Comprehensive Product Specification (기획서) for the Mahjong Vision Calculator utility.</Description>
+    <File path="docs/specs/01_project_overview.md">Project vision, goals, and target platforms.</File>
+    <File path="docs/specs/02_core_workflows.md">Tile recognition and manual correction workflows.</File>
+    <File path="docs/specs/03_application_logic.md">Scoring engine and state management logic.</File>
+    <File path="docs/specs/04_key_features.md">Feature roadmap for v1.0 (MVP) and v2.0.</File>
+    <File path="docs/specs/05_ui_ux_design.md">Screen-by-screen breakdown and interaction design.</File>
+    <File path="docs/specs/06_technical_architecture.md">Tech stack and Zero-Fragmentation policy.</File>
+    <File path="docs/specs/07_development_milestones.md">Phase-wise development schedule and milestones.</File>
+  </Documentation>
+
   <StrictConventions>
     <Rule>Zero-Fragmentation: 99.9% of code must reside in commonMain.</Rule>
     <Rule>Navigation &amp; State: Exclusively Voyager Screen and ScreenModel.</Rule>
