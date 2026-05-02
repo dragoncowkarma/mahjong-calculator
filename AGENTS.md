@@ -1,39 +1,30 @@
-# KMP Project Agent Protocol (AGENTS.md)
+# Project Agent Protocol (AGENTS.md)
 
-## 1. Role & Core Invariants (Always)
-1. **Primary Goal**: Maintain absolute `Zero-Fragmentation` between platforms.
-2. **Execution Rule**: Write 99.9% of code in `commonMain` or `composeApp`.
-3. **Never**: Write business logic, UI, or navigation in `androidApp` or `iosApp` modules.
-4. **Never**: Use `expect`/`actual` for high-level logic. Use Interfaces + `Kotlin-Inject` instead.
+## 1. Role & Core Invariants (Priority #1)
+1. **Context Maintenance**: Read `SUMMARY.xml` before starting any task to prevent unnecessary file access and grasp the architecture.
+2. **State Persistence**: Update `SUMMARY.xml` immediately after any structural changes, new component creation, or path modifications.
+3. **Operational Integrity**: Adhere to the `AGENTS.md` found in target modules (`app/`, `ml-pipeline/`) for specific environment rules.
+4. **Consistency**: Every file MUST end with exactly one blank line. Use `tail -c 1` to verify.
 
-## 2. Tech Stack (Strictly Enforced)
-1. **UI**: `Compose Multiplatform`
-2. **Navigation**: `Voyager` (`cafe.adriel.voyager:*`)
-3. **Asynchronous**: `Coroutines` & `Flow` (`kotlinx.coroutines`)
-4. **DI**: `Kotlin-Inject` (`me.tatarka.inject`)
-5. **Storage**: `Multiplatform Settings` (`com.russhwolf:multiplatform-settings`)
-6. **Serialization**: `kotlinx.serialization`
-7. **Resources**: `Compose Multiplatform Resources` (under `commonMain/composeResources`)
+## 2. Technical Stack (Common)
+1. **Context**: `SUMMARY.xml` (Project-wide mapping).
+2. **Documentation**: `docs/specs/*.md` (Technical specifications).
+3. **Protocol**: Root `AGENTS.md` (Common) and module-specific `AGENTS.md`.
 
 ## When Starting a Task
-1. **Context Check**: Read `SUMMARY.xml` to grasp the latest project architecture and dependencies.
-2. **Validation**: Verify that the task can be implemented using the defined tech stack in `commonMain`.
-3. **Stop**: If a requirement forces platform-specific UI (e.g., `SwiftUI` or `XML Layouts`). Propose a shared `commonMain` abstraction instead.
-
-## When Writing Code
-1. **Location**: All files MUST reside in `commonMain/kotlin/...`.
-2. **Navigation**: Implement all screens via the Voyager `Screen` interface.
-3. **State**: Manage UI state exclusively via Voyager `ScreenModel`. **Never** use Android `ViewModel` or `LiveData`.
-4. **Resources**: Place all strings, drawables, and fonts in `commonMain/composeResources`. Access them via `stringResource()` or `painterResource()`.
-5. **Constraint**: If `android.*` or `platform.UIKit.*` imports appear in shared code, **STOP** and remove them. Use DI to bridge platform gaps.
+1. **Path Resolution**: Read `SUMMARY.xml` to locate components and prevent redundant `ls` or `view_file` calls.
+2. **Protocol Check**: Verify core invariants in this file and any `AGENTS.md` in the current working directory.
+3. **Pre-Flight**: Run `python3 ~/Desktop/agent-md-linter/agent_md_linter.py AGENTS.md` if any protocol is modified.
 
 ## When Finishing a Task (Definition of Done)
-1. **Cross-Platform**: The project compiles for both Android and iOS via `./gradlew build` without platform-specific modifications.
-2. **No Leakage**: No new business logic or UI components exist in `androidApp/` or `iosApp/`.
-3. **Persistence**: `SUMMARY.xml` is updated with any new files, components, or architectural changes.
-4. **Standard**: Code follows the "Always" invariants defined in `Section 1`.
+A task is complete when ALL of the following pass:
+1. `SUMMARY.xml` is updated with all new files and component paths.
+2. The project-wide build or module-specific verify command (`./gradlew build` or `ruff check`) exits 0.
+3. All new files end with exactly one blank line verified by `tail -c 1`.
+4. The modified code passes all functional requirements and `exit 0` is achieved.
 
-## When Blocked (Escalation Rules)
-1. **When Blocked**: If a native API (e.g., Camera, Bluetooth) is required and no common wrapper exists, stop and propose an interface in `commonMain`.
-2. **When Outdated**: If `SUMMARY.xml` does not match the current file structure, update `SUMMARY.xml` before proceeding with the task.
-3. **When Conflicts**: If a library update breaks the `Zero-Fragmentation` rule, revert and seek a multiplatform alternative.
+## Escalation & Safety Rules
+1. **When Blocked**: If a requirement is ambiguous or conflicts with `SUMMARY.xml`, stop and ask for clarification.
+2. **Never**: Do not delete core architecture files or bypass the `SUMMARY.xml` update requirement or documentation.
+3. **Never**: Never modify files outside the scope defined in `SUMMARY.xml` without explicit authorization.
+4. **If Conflict**: If local rules conflict with root rules, prioritize root safety and `Escalation & Safety Rules`.
