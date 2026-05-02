@@ -17,79 +17,69 @@
   </Dependencies>
 
   <ProjectStructure>
-    <Module name="composeApp">
-      <SourceSet name="commonMain">
-        <Description>Shared business logic, UI components, and navigation. Contains the Mahjong calculation engine, tile detection abstractions, and Voyager screens/models.</Description>
-      </SourceSet>
-      <SourceSet name="androidMain">
-        <Description>Android entry point (MainActivity) and platform-specific implementations of Platform and AppComponent.</Description>
-      </SourceSet>
-      <SourceSet name="iosMain">
-        <Description>iOS entry point (MainViewController), camera feed integration, and platform-specific implementations of Platform and AppComponent.</Description>
-      </SourceSet>
+    <Module name="app">
+      <Description>The mobile application module (Kotlin Multiplatform). Contains composeApp (shared) and iosApp (native wrapper).</Description>
     </Module>
-    <Module name="iosApp">
-      <SourceSet name="Swift">
-        <Description>Native Swift wrapper and entry point for the iOS application, bridging to the ComposeApp framework.</Description>
-      </SourceSet>
+    <Module name="ml-pipeline">
+      <Description>AI development pipeline (Python). Responsible for synthetic data generation, YOLO model training, and model export.</Description>
     </Module>
   </ProjectStructure>
 
   <CoreComponents>
     <Component name="MahjongScreenModel" type="ScreenModel">
-      <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/ui/MahjongScreenModel.kt</Path>
+      <Path>app/composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/ui/MahjongScreenModel.kt</Path>
       <Responsibility>Manages UI state and orchestrates score calculation using MahjongCalculator. The simulated hand detection logic (processCameraFrame) has been removed.</Responsibility>
     </Component>
     <Component name="GameStatePanel" type="UI">
-      <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/ui/GameStatePanel.kt</Path>
+      <Path>app/composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/ui/GameStatePanel.kt</Path>
       <Responsibility>An inline Composable that allows users to configure the game state (Dealer, Tsumo, Riichi, Dora Count) directly from the main screen.</Responsibility>
     </Component>
     <Component name="YakuListScreen" type="Screen">
-      <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/ui/YakuListScreen.kt</Path>
+      <Path>app/composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/ui/YakuListScreen.kt</Path>
       <Responsibility>Displays a categorized list of Japanese Mahjong Yakus in Korean.</Responsibility>
     </Component>
     <Component name="YakuCalculationScreen" type="Screen">
-      <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/ui/YakuCalculationScreen.kt</Path>
+      <Path>app/composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/ui/YakuCalculationScreen.kt</Path>
       <Responsibility>Provides UI for users to manually select tiles and verify valid Yakus based on the current hand configuration.</Responsibility>
     </Component>
     <Component name="YakuCalculationScreenModel" type="ScreenModel">
-      <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/ui/YakuCalculationScreenModel.kt</Path>
+      <Path>app/composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/ui/YakuCalculationScreenModel.kt</Path>
       <Responsibility>Manages state for YakuCalculationScreen, holds selected tiles, performs validation, and uses MahjongCalculator to determine valid Yaku.</Responsibility>
     </Component>
     <Component name="YakuData" type="Model">
-      <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/models/YakuData.kt</Path>
+      <Path>app/composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/models/YakuData.kt</Path>
       <Responsibility>Holds static hardcoded list of Mahjong Yakus (YakuInfo) and their descriptions in Korean.</Responsibility>
     </Component>
     <Component name="MahjongCalculator" type="Logic">
-      <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/calculator/MahjongCalculator.kt</Path>
+      <Path>app/composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/calculator/MahjongCalculator.kt</Path>
       <Responsibility>The main orchestration engine that calculates Yaku, Fu, and total points for a given Mahjong hand and context.</Responsibility>
     </Component>
     <Component name="TileDetectionModel" type="Repository">
-      <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/models/TileDetectionModel.kt</Path>
+      <Path>app/composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/models/TileDetectionModel.kt</Path>
       <Responsibility>Abstract interface for detecting Mahjong tiles from raw camera frame data (ByteArray).</Responsibility>
     </Component>
     <Component name="AgariEvaluator" type="Logic">
-      <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/models/AgariEvaluator.kt</Path>
+      <Path>app/composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/models/AgariEvaluator.kt</Path>
       <Responsibility>Determines if a given set of tiles forms a valid winning hand (Agari).</Responsibility>
     </Component>
     <Component name="AppComponent" type="DI">
-      <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/AppComponent.kt</Path>
+      <Path>app/composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/AppComponent.kt</Path>
       <Responsibility>The root DI component interface, implemented on each platform to provide dependencies like Platform and TileDetectionModel.</Responsibility>
     </Component>
     <Component name="TileRecognitionScreen" type="Screen">
-      <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/ui/TileRecognitionScreen.kt</Path>
+      <Path>app/composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/ui/TileRecognitionScreen.kt</Path>
       <Responsibility>Provides UI for picking images from Gallery or Camera, and displays spatial recognition of tiles categorized by Hand, Discards, and Melds. Renders visual bounding boxes (overlay) mapped correctly to the displayed image scale using Canvas.</Responsibility>
     </Component>
     <Component name="TileRecognitionScreenModel" type="ScreenModel">
-      <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/ui/TileRecognitionScreenModel.kt</Path>
+      <Path>app/composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/ui/TileRecognitionScreenModel.kt</Path>
       <Responsibility>Manages state for image recognition, processes bounding boxes into spatial categories (Hand vs Discard vs Melds), explicitly returns box coordinate data for the UI, and falls back to dummy MockDataGenerator data if detection fails or is empty.</Responsibility>
     </Component>
     <Component name="ImagePicker" type="Interface">
-      <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/models/ImagePicker.kt</Path>
+      <Path>app/composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/models/ImagePicker.kt</Path>
       <Responsibility>Platform-agnostic interface for picking images. Natively prompts the user (using Action Sheet on iOS and Dialog on Android) to choose between Gallery or Camera.</Responsibility>
     </Component>
     <Component name="ImageBitmapDecoder" type="Interface">
-      <Path>composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/models/ImageBitmapDecoder.kt</Path>
+      <Path>app/composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/models/ImageBitmapDecoder.kt</Path>
       <Responsibility>Platform-agnostic interface for decoding byte arrays into ImageBitmap for UI preview.</Responsibility>
     </Component>
   </CoreComponents>

@@ -1,19 +1,34 @@
-*.iml
-.kotlin
-.gradle
-**/build/
-xcuserdata
-!src/**/build/
-local.properties
-.idea
+# Monorepo Root GitIgnore
+
+# Common
 .DS_Store
-captures
-.externalNativeBuild
-.cxx
-*.xcodeproj/*
-!*.xcodeproj/project.pbxproj
-!*.xcodeproj/xcshareddata/
-!*.xcodeproj/project.xcworkspace/
-!*.xcworkspace/contents.xcworkspacedata
-**/xcshareddata/WorkspaceSettings.xcsettings
-node_modules/
+.idea/
+.vscode/
+*.iml
+*.log
+
+# ML Pipeline (Python)
+ml-pipeline/venv/
+ml-pipeline/__pycache__/
+ml-pipeline/.ipynb_checkpoints/
+ml-pipeline/data/synthetic/*
+ml-pipeline/data/processed/*
+!ml-pipeline/data/synthetic/.gitkeep
+!ml-pipeline/data/processed/.gitkeep
+ml-pipeline/runs/  # YOLO training outputs
+
+# Android/Kotlin (Root level if applicable)
+.gradle/
+build/
+local.properties
+.kotlin/
+captures/
+*.apk
+*.aar
+*.jks
+
+# iOS
+iosApp/DerivedData/
+iosApp/*.xcworkspace/
+iosApp/Pods/
+iosApp/build/

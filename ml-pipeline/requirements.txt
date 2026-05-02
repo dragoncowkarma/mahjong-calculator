@@ -1,0 +1,23 @@
+# ML Pipeline Requirements
+
+# Model & Training
+ultralytics>=8.0.0  # YOLOv8/v11
+torch>=2.0.0
+torchvision>=0.15.0
+
+# Data Processing & Synthesis
+Pillow>=9.0.0
+numpy>=1.24.0
+opencv-python>=4.7.0
+pandas>=2.0.0
+matplotlib>=3.7.0
+
+# Utilities
+tqdm>=4.65.0
+PyYAML>=6.0
+scikit-learn>=1.2.0
+
+# Exporting
+onnx>=1.14.0
+coremltools>=7.0  # For .mlmodel export
+tensorflow>=2.13.0  # For .tflite export
