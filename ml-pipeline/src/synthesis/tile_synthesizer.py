@@ -99,7 +99,12 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100):
 
     tile_names = list(tiles.keys())
 
-    for i in range(count):
+    generated = 0
+    attempts = 0
+    max_attempts = count * 10
+
+    while generated < count and attempts < max_attempts:
+        attempts += 1
         bg = random.choice(backgrounds).copy()
         bg_h, bg_w = bg.shape[:2]
 
@@ -153,8 +158,13 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100):
             final_bboxes = transformed['bboxes']
             final_labels = transformed['class_labels']
 
-            img_filename = f"synth_{i:04d}.jpg"
-            lbl_filename = f"synth_{i:04d}.txt"
+            # Albumentations might remove bounding boxes if they fall outside the image
+            # Only save if we still have at least one valid bounding box
+            if not final_bboxes:
+                continue
+
+            img_filename = f"synth_{generated:04d}.jpg"
+            lbl_filename = f"synth_{generated:04d}.txt"
 
             cv2.imwrite(os.path.join(img_out_dir, img_filename), final_img)
 
@@ -162,13 +172,21 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100):
                 for bbox, label in zip(final_bboxes, final_labels):
                     f.write(f"{label} {bbox[0]:.6f} {bbox[1]:.6f} {bbox[2]:.6f} {bbox[3]:.6f}\n")
 
+            generated += 1
+
         except Exception as e:
             print(f"Error applying transform: {e}")
 
+    if generated < count:
+        print(f"Warning: Only generated {generated}/{count} images after {max_attempts} attempts.")
+    else:
+        print(f"Successfully generated {generated} images.")
+
 if __name__ == "__main__":
     base_dir = get_base_dir()
+    project_root = os.path.dirname(base_dir)
     generate_synthetic_data(
-        os.path.join(base_dir, "data", "raw", "tiles"),
+        os.path.join(project_root, "mahjong-tiles-image"),
         os.path.join(base_dir, "data", "raw", "backgrounds"),
         os.path.join(base_dir, "data", "synthetic"),
         count=100
