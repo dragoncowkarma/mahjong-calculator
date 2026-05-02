@@ -111,6 +111,11 @@
     <File path="docs/specs/05_ui_ux_design.md">Screen-by-screen breakdown and interaction design.</File>
     <File path="docs/specs/06_technical_architecture.md">Tech stack and Zero-Fragmentation policy.</File>
     <File path="docs/specs/07_development_milestones.md">Phase-wise development schedule and milestones.</File>
+    <File path="docs/AGENTS.md">Documentation standards and Mermaid diagram protocols.</File>
+    <File path="docs/prompts/010_foundation.md">AI prompts for Phase 1: Foundation and Synthesis.</File>
+    <File path="docs/prompts/020_ai_optimization.md">AI prompts for Phase 2: Training and Optimization.</File>
+    <File path="docs/prompts/030_ui_ux.md">AI prompts for Phase 3: UI Integration and UX Polish.</File>
+    <File path="docs/prompts/040_expansion.md">AI prompts for Phase 4: Features and Global Expansion.</File>
   </Documentation>
 
   <StrictConventions>
