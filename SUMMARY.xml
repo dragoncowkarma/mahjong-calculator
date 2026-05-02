@@ -54,6 +54,10 @@
       <Path>app/composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/calculator/MahjongCalculator.kt</Path>
       <Responsibility>The main orchestration engine that calculates Yaku, Fu, and total points for a given Mahjong hand and context.</Responsibility>
     </Component>
+    <Component name="YakuCalculator" type="Logic">
+      <Path>app/composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/calculator/YakuCalculator.kt</Path>
+      <Responsibility>Evaluates and returns valid Yakus (with correctly localized Korean strings, e.g., '대삼원', '역패', '탕야오') based on the current hand and context. Fully tested including edge-case Yakus.</Responsibility>
+    </Component>
     <Component name="TileDetectionModel" type="Repository">
       <Path>app/composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/models/TileDetectionModel.kt</Path>
       <Responsibility>Abstract interface for detecting Mahjong tiles from raw camera frame data (ByteArray).</Responsibility>
