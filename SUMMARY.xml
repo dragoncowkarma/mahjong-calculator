@@ -116,11 +116,14 @@
     <File path="docs/specs/06_technical_architecture.md">Technical architecture, module boundaries, and system constraints (What NOT to do).</File>
     <File path="docs/specs/07_development_milestones.md">Phase-wise development schedule and milestones.</File>
     <File path="docs/specs/08_voyager_migration_strategy.md">Strategy for migrating UI screens to the Voyager and Kotlin-Inject framework.</File>
-    <File path="docs/AGENTS.md">Documentation standards and Mermaid diagram protocols.</File>
-    <File path="docs/prompts/010_foundation.md">AI prompts for Phase 1: Foundation and Synthesis.</File>
-    <File path="docs/prompts/020_ai_optimization.md">AI prompts for Phase 2: Training and Optimization.</File>
-    <File path="docs/prompts/030_ui_ux.md">AI prompts for Phase 3: UI Integration and UX Polish.</File>
-    <File path="docs/prompts/040_expansion.md">AI prompts for Phase 4: Features and Global Expansion.</File>
+    <File path="docs/AGENTS.md">Documentation management rules and AI agent role distribution (Jules, Antigravity, Gemini CLI).</File>
+    <File path="docs/prompts/agents.md">English-standardized prompt engineering standards and modularization rules.</File>
+    <File path="docs/prompts/parallel_tasks.md">Registry of AI tasks that can be executed concurrently by the Jules agent.</File>
+    <File path="docs/prompts/000_communication_templates.md">Standard English templates for PR feedback, build errors, and merge conflicts.</File>
+    <File path="docs/prompts/010/">Phase 1: Foundation &amp; Synthesis modular prompts (lowercase, English). 01001 and 01002 are completed.</File>
+    <File path="docs/prompts/020/">Phase 2: AI Optimization modular prompts (lowercase, English).</File>
+    <File path="docs/prompts/030/">Phase 3: UI/UX &amp; Integration modular prompts (lowercase, English).</File>
+    <File path="docs/prompts/040/">Phase 4: Features &amp; Expansion modular prompts (lowercase, English).</File>
   </Documentation>
 
   <StrictConventions>
