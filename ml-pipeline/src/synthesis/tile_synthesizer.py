@@ -16,10 +16,17 @@ CLASS_MAPPING = {
 }
 
 def load_tiles(raw_tile_dir):
-    """Load transparent PNGs of tiles."""
+    """Load PNGs of tiles and composite them over Front.png for full opacity."""
     tiles = {}
     if not os.path.exists(raw_tile_dir):
         return tiles
+
+    # Preload the completely opaque Front backboard
+    front_path = os.path.join(raw_tile_dir, "Front.png")
+    front_img = cv2.imread(front_path, cv2.IMREAD_UNCHANGED)
+    if front_img is None:
+        print("Warning: Front.png not found, tiles might be transparent!")
+
     for filename in os.listdir(raw_tile_dir):
         if not filename.endswith(".png"):
             continue
@@ -29,7 +36,25 @@ def load_tiles(raw_tile_dir):
             # Read with alpha channel
             tile_img = cv2.imread(path, cv2.IMREAD_UNCHANGED)
             if tile_img is not None:
-                tiles[name] = tile_img
+                if front_img is not None and name != "Front":
+                    # Create an opaque tile by overlaying tile_img onto front_img
+                    opaque_tile = front_img.copy()
+
+                    h, w = tile_img.shape[:2]
+                    fh, fw = opaque_tile.shape[:2]
+
+                    if h <= fh and w <= fw:
+                        if tile_img.shape[2] == 4:
+                            alpha = tile_img[:, :, 3] / 255.0
+                            for c in range(3):
+                                opaque_tile[:h, :w, c] = (alpha * tile_img[:, :, c] + (1 - alpha) * opaque_tile[:h, :w, c])
+                            opaque_tile[:h, :w, 3] = np.maximum(tile_img[:, :, 3], opaque_tile[:h, :w, 3])
+                        else:
+                            opaque_tile[:h, :w] = tile_img
+
+                    tiles[name] = opaque_tile
+                else:
+                    tiles[name] = tile_img
     return tiles
 
 def load_backgrounds(bg_dir):
@@ -114,7 +139,9 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100):
         bboxes = []
         labels = []
 
-        # Place tiles without overlap check (allows occlusion/overlapping)
+        # Place tiles ensuring NO overlap
+        placed_boxes = []  # To track (x1, y1, x2, y2) of placed tiles
+
         for _ in range(num_tiles):
             t_name = random.choice(tile_names)
             t_img = tiles[t_name]
@@ -145,14 +172,34 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100):
 
             t_img_rotated = cv2.warpAffine(t_img_resized, rot_mat, (rot_w, rot_h), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT, borderValue=(0, 0, 0, 0))
 
-            # Random position
+            # Random position with overlap check
             max_x = bg_w - rot_w
             max_y = bg_h - rot_h
             if max_x <= 0 or max_y <= 0:
                 continue
 
-            x = random.randint(0, max_x)
-            y = random.randint(0, max_y)
+            max_placement_attempts = 50
+            placed = False
+
+            for _ in range(max_placement_attempts):
+                x = random.randint(0, max_x)
+                y = random.randint(0, max_y)
+
+                # Check for overlap
+                overlap = False
+                for bx1, by1, bx2, by2 in placed_boxes:
+                    # If rectangles intersect, there is an overlap
+                    if not (x + rot_w <= bx1 or x >= bx2 or y + rot_h <= by1 or y >= by2):
+                        overlap = True
+                        break
+
+                if not overlap:
+                    placed = True
+                    placed_boxes.append((x, y, x + rot_w, y + rot_h))
+                    break
+
+            if not placed:
+                continue # Could not find a non-overlapping spot
 
             # Add shadow effect under the tile
             shadow_offset_x = random.randint(5, 15)
@@ -167,7 +214,7 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100):
                 for c in range(3):
                     bg[shadow_y:shadow_y + rot_h, shadow_x:shadow_x + rot_w, c] = (shadow_alpha * 0 + (1 - shadow_alpha) * bg[shadow_y:shadow_y + rot_h, shadow_x:shadow_x + rot_w, c])
 
-            # Overlay the actual tile
+            # Overlay the actual tile, tile has 100% opaque face because of Front composite
             bg = overlay_image(bg, t_img_rotated, x, y)
 
             # YOLO format: center_x, center_y, width, height (normalized)
