@@ -1,28 +1,28 @@
-# 05. UI/UX Design
+# 05. UI/UX 디자인
 
-## 1. Primary Screens
+## 1. 주요 화면 (Primary Screens)
 
-### TileRecognitionScreen
-- **Camera Viewport**: 중앙에 패를 정렬할 수 있는 가이드라인 제공.
-- **Scan Button**: 현재 화면의 패를 캡처하여 인식 프로세스 시작.
-- **Flashlight Toggle**: 어두운 곳에서도 인식이 가능하도록 플래시 제어.
+### 패 인식 화면 (TileRecognitionScreen)
+- **카메라 뷰포트**: 중앙에 패를 정렬할 수 있는 가이드라인 제공.
+- **스캔 버튼**: 현재 화면의 패를 캡처하여 인식 프로세스 시작.
+- **플래시 토글**: 어두운 곳에서도 인식이 가능하도록 플래시 제어.
 
-### TileCorrectionPanel (Overlay)
-- **Grid View**: 인식된 14개의 패를 그리드 형태로 표시.
-- **Selection Mode**: 패를 선택하면 선택 가능한 모든 타일 리스트가 하단에 노출되어 즉시 교체 가능.
+### 패 교정 패널 (TileCorrectionPanel - Overlay)
+- **그리드 뷰**: 인식된 14개의 패를 그리드 형태로 표시.
+- **선택 모드**: 패를 선택하면 선택 가능한 모든 타일 리스트가 하단에 노출되어 즉시 교체 가능.
 
-### GameStatePanel
-- **Quick Selectors**: 동/남/서/북, 리이치 여부, 도라 수 등을 탭하여 빠르게 설정.
-- **Toggle Switches**: 쯔모/론, 일발 등 상태 설정.
+### 상황 설정 패널 (GameStatePanel)
+- **퀵 셀렉터**: 동/남/서/북, 리이치 여부, 도라 수 등을 탭하여 빠르게 설정.
+- **토글 스위치**: 쯔모/론, 일발 등 상태 설정.
 
-### ResultListScreen
-- **Accordion Style**: 적용된 각 역의 이름과 판수를 리스트업하고, 상세 정보를 펼쳐볼 수 있는 구조.
+### 결과 목록 화면 (ResultListScreen)
+- **아코디언 스타일**: 적용된 각 역의 이름과 판수를 리스트업하고, 상세 정보를 펼쳐볼 수 있는 구조.
 
-### ScoreResultDashboard
-- **Big Typography**: 최종 점수를 가장 크게 표시.
-- **Distribution Table**: 정산 금액(예: 오야 12000, 코 4000/4000)을 명확히 시각화.
+### 점수 결과 대시보드 (ScoreResultDashboard)
+- **대형 타이포그래피**: 최종 점수를 가장 크게 표시.
+- **분배 표 (Distribution Table)**: 정산 금액(예: 오야 12000, 자 4000/4000)을 명확히 시각화.
 
-## 2. Interaction Design
-- **Haptic Feedback**: 인식 성공, 버튼 클릭, 계산 완료 시 적절한 진동 피드백.
-- **Smooth Transitions**: 화면 전환 시 Voyager의 네이티브 애니메이션을 활용하여 부드러운 사용자 경험 제공.
-- **Micro-animations**: 계산 프로세스 진행 중임을 알리는 인디케이터나 점수 카운팅 효과 적용.
+## 2. 인터렉션 디자인 (Interaction Design)
+- **햅틱 피드백**: 인식 성공, 버튼 클릭, 계산 완료 시 적절한 진동 피드백 제공.
+- **부드러운 전환 (Smooth Transitions)**: 화면 전환 시 Voyager의 네이티브 애니메이션을 활용하여 부드러운 사용자 경험 제공.
+- **마이크로 애니메이션**: 계산 프로세스 진행 중임을 알리는 인디케이터나 점수 카운팅 효과 적용.

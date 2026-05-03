@@ -1,38 +1,38 @@
-# Voyager Migration Strategy
+# 08. Voyager 마이그레이션 전략
 
-## Overview
-This document outlines the strategy for migrating existing Jetpack Compose screens to the **Voyager** routing framework, utilizing **Kotlin-Inject** for dependency injection.
+## 개요 (Overview)
+이 문서는 기존 Jetpack Compose 화면을 **Voyager** 라우팅 프레임워크로 마이그레이션하고, 의존성 주입(DI)을 위해 **Kotlin-Inject**를 활용하는 전략을 정의합니다.
 
-## 1. Migration Status
-The core infrastructure for `Voyager` and `Kotlin-Inject` has already been successfully integrated into `libs.versions.toml` and `app/composeApp/build.gradle.kts` without disrupting the existing KMP configurations. 
+## 1. 마이그레이션 상태 (Migration Status)
+`Voyager` 및 `Kotlin-Inject`를 위한 핵심 인프라는 기존 KMP 설정을 유지하며 `libs.versions.toml` 및 `app/composeApp/build.gradle.kts`에 성공적으로 통합되었습니다.
 
-Existing screens, including `YakuCalculationScreen`, have already been structurally adapted to this model.
+`YakuCalculationScreen`을 포함한 기존 화면들은 이미 이 구조에 맞춰 아키텍처 조정이 완료된 상태입니다.
 
-## 2. Refactoring Strategy for Existing UI Logic
-To safely migrate screens to Voyager without breaking existing logic, the following patterns are enforced:
+## 2. UI 로직 리팩토링 전략
+기존 로직을 유지하며 안전하게 Voyager로 마이그레이션하기 위해 다음 패턴을 준수해야 합니다.
 
-### Screen Implementation
-- Each distinct UI flow must implement Voyager's `Screen` interface.
-- Compose components are wrapped inside the overridden `@Composable override fun Content()` block.
-- Example: `class YakuCalculationScreen : Screen { ... }`
+### 화면 구현 (Screen Implementation)
+- 각각의 독립적인 UI 흐름은 Voyager의 `Screen` 인터페이스를 구현해야 합니다.
+- Compose 컴포넌트는 재정의된 `@Composable override fun Content()` 블록 내에 래핑됩니다.
+- 예시: `class YakuCalculationScreen : Screen { ... }`
 
-### State Management via ScreenModel
-- Business logic and state must be decoupled from the `Screen` and moved into a `ScreenModel`.
-- State is exposed using `StateFlow` and consumed in the UI via `collectAsState()`.
-- Example: `class YakuCalculationScreenModel @Inject constructor() : ScreenModel { ... }`
+### ScreenModel을 통한 상태 관리
+- 비즈니스 로직과 상태는 `Screen`에서 분리되어 `ScreenModel`로 이동해야 합니다.
+- 상태는 `StateFlow`를 통해 노출되며, UI에서 `collectAsState()`를 사용하여 소비됩니다.
+- 예시: `class YakuCalculationScreenModel @Inject constructor() : ScreenModel { ... }`
 
-### Dependency Injection Integration
-- **Kotlin-Inject** handles `ScreenModel` instantiation.
-- Screens access their respective models via `rememberScreenModel` leveraging the app's root component.
-- Example:
+### 의존성 주입 통합 (DI Integration)
+- **Kotlin-Inject**가 `ScreenModel`의 인스턴스화를 담당합니다.
+- 화면은 앱의 루트 컴포넌트를 활용하여 `rememberScreenModel`을 통해 해당 모델에 접근합니다.
+- 예시:
   ```kotlin
   val component = LocalAppComponent.current
   val screenModel = rememberScreenModel { component.yakuCalculationScreenModel }
   ```
 
-### Navigation Execution
-- Navigation relies on Voyager's `LocalNavigator.currentOrThrow`.
-- Operations like `navigator.push()` and `navigator.pop()` govern screen transitions, ensuring the back-stack remains strictly decoupled from native platform implementations.
+### 내비게이션 실행 (Navigation Execution)
+- 내비게이션은 Voyager의 `LocalNavigator.currentOrThrow`에 의존합니다.
+- `navigator.push()` 및 `navigator.pop()`과 같은 작업을 통해 화면 전환을 제어하며, 백스택(Back-stack)이 네이티브 플랫폼 구현으로부터 독립적으로 유지되도록 보장합니다.
 
-## 3. Conclusion
-The initial migration is complete. Moving forward, all new screens added to the `app/` module must adhere to this `Screen` and `ScreenModel` contract as dictated by `AGENTS.md`.
+## 3. 결론
+초기 마이그레이션이 완료되었습니다. 향후 `app/` 모듈에 추가되는 모든 새로운 화면은 `AGENTS.md`에 명시된 대로 이 `Screen` 및 `ScreenModel` 규약을 준수해야 합니다.

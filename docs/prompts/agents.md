@@ -16,7 +16,7 @@ Select the standard template based on task type.
 1. [Refer to Section 3 for Role Definition]
 
 # 📋 Context
-1. Read `../SUMMARY.xml` and `../../REFACTOR_TRACKING.md` before starting.
+1. Read `../../SUMMARY.xml` and `../../REFACTOR_TRACKING.md` before starting.
 <context>
 - Project: `Mahjong Calculator` (KMP/ML)
 - Module: [Module Name]
@@ -26,7 +26,7 @@ Select the standard template based on task type.
 # 🛠️ Task
 Execute instructions per `AGENTS.md`.
 <task>
-1. Check `../SUMMARY.xml` for scope overlaps and `../../REFACTOR_TRACKING.md` for debts.
+1. Check `../../SUMMARY.xml` for scope overlaps and `../../REFACTOR_TRACKING.md` for debts.
 2. Propose `implementation_plan.md` for architectural changes.
 3. [Detail core features]
 4. Remove resolved items from `../../REFACTOR_TRACKING.md`.
@@ -70,7 +70,7 @@ Execute instructions per `AGENTS.md`.
 1. [Refer to Section 3.1 for Jules Role Definition]
 
 # 📋 Context
-1. Read `../SUMMARY.xml` and `../../REFACTOR_TRACKING.md` before starting.
+1. Read `../../SUMMARY.xml` and `../../REFACTOR_TRACKING.md` before starting.
 <context>
 - Project: `Mahjong Calculator` (KMP/ML)
 - Module: [Module Name]
@@ -80,7 +80,7 @@ Execute instructions per `AGENTS.md`.
 # 🛠️ Task
 Execute instructions per `AGENTS.md`.
 <task>
-1. Check `../SUMMARY.xml` and `../../REFACTOR_TRACKING.md`.
+1. Check `../../SUMMARY.xml` and `../../REFACTOR_TRACKING.md`.
 2. Implement core features.
 3. Remove resolved items from `../../REFACTOR_TRACKING.md`.
 </task>
