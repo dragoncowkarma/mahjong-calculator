@@ -2,6 +2,7 @@ import os
 import random
 import cv2
 import albumentations as A
+import numpy as np
 
 # Map class names to IDs
 CLASS_MAPPING = {
@@ -94,6 +95,7 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100):
         A.Perspective(scale=(0.05, 0.1), p=0.5),
         A.GaussianBlur(blur_limit=(3, 7), p=0.5),
         A.GaussNoise(std_range=(0.05, 0.2), p=0.5),
+        A.HueSaturationValue(hue_shift_limit=20, sat_shift_limit=30, val_shift_limit=20, p=0.5),
         A.RandomBrightnessContrast(p=0.5)
     ], bbox_params=A.BboxParams(format='yolo', min_visibility=0.1, label_fields=['class_labels']))
 
@@ -108,11 +110,11 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100):
         bg = random.choice(backgrounds).copy()
         bg_h, bg_w = bg.shape[:2]
 
-        num_tiles = random.randint(1, 5)
+        num_tiles = random.randint(5, 14)
         bboxes = []
         labels = []
 
-        # Place tiles without overlap check (for simplicity, they might overlap)
+        # Place tiles without overlap check (allows occlusion/overlapping)
         for _ in range(num_tiles):
             t_name = random.choice(tile_names)
             t_img = tiles[t_name]
@@ -126,22 +128,53 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100):
 
             t_img_resized = cv2.resize(t_img, (new_w, new_h))
 
+            # Apply random rotation to the tile image
+            angle = random.uniform(-180, 180)
+            center = (new_w // 2, new_h // 2)
+            rot_mat = cv2.getRotationMatrix2D(center, angle, 1.0)
+
+            # Calculate new bounding box for the rotated image
+            cos = np.abs(rot_mat[0, 0])
+            sin = np.abs(rot_mat[0, 1])
+            rot_w = int((new_h * sin) + (new_w * cos))
+            rot_h = int((new_h * cos) + (new_w * sin))
+
+            # Adjust rotation matrix to account for translation
+            rot_mat[0, 2] += (rot_w / 2) - center[0]
+            rot_mat[1, 2] += (rot_h / 2) - center[1]
+
+            t_img_rotated = cv2.warpAffine(t_img_resized, rot_mat, (rot_w, rot_h), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT, borderValue=(0, 0, 0, 0))
+
             # Random position
-            max_x = bg_w - new_w
-            max_y = bg_h - new_h
+            max_x = bg_w - rot_w
+            max_y = bg_h - rot_h
             if max_x <= 0 or max_y <= 0:
                 continue
 
             x = random.randint(0, max_x)
             y = random.randint(0, max_y)
 
-            bg = overlay_image(bg, t_img_resized, x, y)
+            # Add shadow effect under the tile
+            shadow_offset_x = random.randint(5, 15)
+            shadow_offset_y = random.randint(5, 15)
+
+            shadow_x = x + shadow_offset_x
+            shadow_y = y + shadow_offset_y
+
+            if shadow_x + rot_w <= bg_w and shadow_y + rot_h <= bg_h:
+                alpha_mask = t_img_rotated[:, :, 3] / 255.0
+                shadow_alpha = alpha_mask * random.uniform(0.3, 0.5)
+                for c in range(3):
+                    bg[shadow_y:shadow_y + rot_h, shadow_x:shadow_x + rot_w, c] = (shadow_alpha * 0 + (1 - shadow_alpha) * bg[shadow_y:shadow_y + rot_h, shadow_x:shadow_x + rot_w, c])
+
+            # Overlay the actual tile
+            bg = overlay_image(bg, t_img_rotated, x, y)
 
             # YOLO format: center_x, center_y, width, height (normalized)
-            cx = (x + new_w / 2.0) / bg_w
-            cy = (y + new_h / 2.0) / bg_h
-            nw = new_w / bg_w
-            nh = new_h / bg_h
+            cx = (x + rot_w / 2.0) / bg_w
+            cy = (y + rot_h / 2.0) / bg_h
+            nw = rot_w / bg_w
+            nh = rot_h / bg_h
 
             bboxes.append([cx, cy, nw, nh])
             labels.append(CLASS_MAPPING[t_name])
@@ -170,7 +203,7 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100):
 
             with open(os.path.join(lbl_out_dir, lbl_filename), "w") as f:
                 for bbox, label in zip(final_bboxes, final_labels):
-                    f.write(f"{label} {bbox[0]:.6f} {bbox[1]:.6f} {bbox[2]:.6f} {bbox[3]:.6f}\n")
+                    f.write(f"{int(label)} {bbox[0]:.6f} {bbox[1]:.6f} {bbox[2]:.6f} {bbox[3]:.6f}\n")
 
             generated += 1
 
