@@ -1,61 +1,41 @@
-# 06. Technical Architecture
+# 06. Technical Architecture & Constraints
 
 ## 1. Zero-Fragmentation Policy (AGENTS.md)
-본 프로젝트는 `AGENTS.md`의 지침을 엄격히 준수하여 플랫폼 간 파편화를 최소화합니다.
-- **commonMain**: 비즈니스 로직, 데이터 모델, UI 컴포넌트, 네비게이션을 99.9% 포함.
-- **Platform Abstraction**: 카메라 API 및 ML 추론(Inference) 엔진과 같이 플랫폼 의존적인 기능은 Interface를 통해 추상화하고 DI로 주입.
 
-## 2. Tech Stack
-- **UI Framework**: Compose Multiplatform
-- **Navigation**: Voyager
-- **Dependency Injection**: Kotlin-Inject
-- **Asynchronous**: Coroutines & Flow
-- **ML Inference**: 
-    - **Android**: TensorFlow Lite (ML Kit)
-    - **iOS**: CoreML (Vision Framework)
-- **Model Architecture**: YOLOv8/v11 Nano
-- **AI Pipeline (Python)**:
-    - **Core**: PyTorch, Ultralytics (YOLO)
-    - **Data**: OpenCV, Albumentations, NumPy
-    - **Export**: CoreMLTools, TFLite-Support
-- **Local Storage**: Multiplatform Settings
+This project strictly adheres to the Zero-Fragmentation protocol.
 
-## 3. Modular Structure (Monorepo)
-```mermaid
-graph TD
-    Root[Project Root] --> App[app/]
-    Root --> ML[ml-pipeline/]
-    
-    subgraph "Mobile Application (app/)"
-        A[composeApp:commonMain] --> B[UI: Screens & Components]
-        A --> C[Domain: Scoring Logic]
-        A --> D[Data: Repository & Settings]
-        A --> H[Interface: ImageAnalyzer]
-        E[androidApp] --> A
-        F[iosApp] --> A
-    end
-    
-    subgraph "AI Pipeline (ml-pipeline/)"
-        ML --> S[src/synthesis]
-        ML --> T[src/training]
-        ML --> EX[src/export]
-        ML --> MD[models/]
-    end
-    
-    EX -- deploy --> H
-```
+- **commonMain**: 99.9% of code (Logic, Models, UI, Navigation).
+- **Platform Abstraction**: Only Camera API and ML Inference via Interfaces + DI.
 
-## 4. Monorepo Strategy
-본 프로젝트는 단일 리포지토리에서 앱 개발과 AI 연구를 병행하는 모노레포 구조를 채택합니다.
-- **app/**: Kotlin Multiplatform 기반 모바일 애플리케이션 (Zero-Fragmentation 준수).
-- **ml-pipeline/**: Python 기반 AI 모델 학습 및 데이터 합성 파이프라인.
+## 2. Module Boundaries (Monorepo)
 
-## 5. AI Development Pipeline
-1. **Data Synthesis**: `src/synthesis`를 통해 34종 마작 패에 대한 대량의 합성 이미지 생성.
-2. **Model Training**: `src/training`에서 YOLOv8/v11 Nano 아키텍처를 사용하여 객체 탐지 모델 학습.
-3. **Export & Optimization**: `src/export`를 통해 모바일 환경에 최적화된 TFLite 및 CoreML 모델 추출.
+| Module | Location | Technology | Responsibility |
+| :--- | :--- | :--- | :--- |
+| **Shared Core** | `app/composeApp/commonMain` | Kotlin | Common Data Models (Tile, Hand, etc.) |
+| **App Module** | `app/` | KMP (Voyager, Kotlin-Inject) | UI, Scoring Logic, Camera Integration |
+| **ML Module** | `ml-pipeline/` | Python (PyTorch, YOLO) | Data Synthesis, Training, Model Export |
 
-## 6. Coding Standards
-- **Brace Style**: K&R style (opening brace on the same line).
-- **Newline**: 모든 파일의 끝에는 하나의 빈 줄(Empty newline)을 유지.
-- **Naming**: Kotlin 표준 코딩 컨벤션 및 Voyager Screen 네이밍 규칙 준수.
+### 2.1. Dependency Rules
+- **App/ML -> Shared Core**: Both modules must inherit the same domain logic.
+- **App <-> ML**: NO direct dependencies. ML module exports files (`.tflite`, `.mlmodel`) which the App module consumes.
+
+## 3. System Constraints (What NOT to do)
+
+To prevent hallucinations and architectural decay, AI agents must obey these rules:
+
+- **Constraint 1 (No Logic in Platform)**: Do NOT implement business logic in `androidMain` or `iosMain`. Use `expect/actual` only for hardware-specific calls.
+- **Constraint 2 (No UI in ML Pipeline)**: The `ml-pipeline` must remain a headless data/training module. No GUI frameworks (Tkinter, Qt) allowed.
+- **Constraint 3 (No External Calculators)**: All scoring must happen within the `Shared Core` logic. Do not import 3rd party scoring libraries unless authorized.
+- **Constraint 4 (Stateless Engine)**: The scoring engine must NOT depend on persistent state (databases, preferences). It must be a pure function of `(Hand, GameContext) -> Result`.
+- **Constraint 5 (Korean Localization)**: All Yaku names and UI strings intended for the user must be in **Korean**.
+
+## 4. Tech Stack
+
+- **UI**: Compose Multiplatform
+- **Navigation**: Voyager (Screen/ScreenModel)
+- **DI**: Kotlin-Inject (KSP)
+- **ML**: YOLOv8/v11 Nano -> TFLite / CoreML
+- **AI Pipeline**: PyTorch, Albumentations (Blur, Noise, Perspective)
+
+---
+

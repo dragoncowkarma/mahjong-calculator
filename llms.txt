@@ -1,0 +1,26 @@
+# Mahjong Calculator: AI Agent Roadmap
+
+Welcome, AI Agent. This repository is a multi-module Kotlin Multiplatform (KMP) and Python (ML) project designed for real-time Mahjong tile recognition and scoring.
+
+## 1. Core Architecture Rules
+- **Zero-Fragmentation**: 99.9% of code must reside in `app/composeApp/commonMain`.
+- **Stateless Scoring**: Business logic must be pure functions of `(Hand, GameContext)`.
+- **Strict Isolation**: `app/` and `ml-pipeline/` are loosely coupled via model export/import.
+
+## 2. Module Roadmap
+- **Application (`app/`)**: Compose Multiplatform + Voyager + Kotlin-Inject.
+- **ML Pipeline (`ml-pipeline/`)**: PyTorch + YOLO + Albumentations.
+- **Shared Core**: Resides in `app/composeApp/commonMain/kotlin/.../models/`.
+
+## 3. Mandatory Documentation
+Before any task, read these in order:
+1. `SUMMARY.xml`: Current project state and component mapping.
+2. `AGENTS.md`: Technical protocols and invariants.
+3. `docs/specs/01_project_overview.md`: Structured PRD and module definitions.
+4. `docs/specs/06_technical_architecture.md`: Explicit system constraints.
+
+## 4. Key Constraints
+- All UI and Yaku strings must be in **Korean**.
+- Do not add logic to `androidMain` or `iosMain`.
+- No GUI dependencies in `ml-pipeline`.
+

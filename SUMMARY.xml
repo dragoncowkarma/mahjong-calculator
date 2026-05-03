@@ -5,7 +5,7 @@
     <KotlinVersion>2.1.0</KotlinVersion>
     <Targets>android, iosArm64, iosSimulatorArm64</Targets>
     <Architecture>MVVM/MVI with Voyager ScreenModel and Kotlin-Inject for Dependency Injection.</Architecture>
-    <AgentProtocol>AGENTS.md defines the strict Zero-Fragmentation protocol for all AI agent interactions.</AgentProtocol>
+    <AgentProtocol>AGENTS.md and llms.txt define the strict protocols and roadmap for AI agent interactions.</AgentProtocol>
   </Meta>
 
   <Dependencies>
@@ -108,12 +108,12 @@
 
   <Documentation>
     <Description>Comprehensive Product Specification (기획서) for the Mahjong Vision Calculator utility.</Description>
-    <File path="docs/specs/01_project_overview.md">Project vision, goals, and target platforms.</File>
+    <File path="docs/specs/01_project_overview.md">Structured PRD: Core objectives, strategic alignment, and module definitions.</File>
     <File path="docs/specs/02_core_workflows.md">Tile recognition and manual correction workflows.</File>
-    <File path="docs/specs/03_application_logic.md">Scoring engine and state management logic.</File>
+    <File path="docs/specs/03_application_logic.md">Shared Core Entities and Stateless Scoring Engine specifications.</File>
     <File path="docs/specs/04_key_features.md">Feature roadmap for v1.0 (MVP) and v2.0.</File>
     <File path="docs/specs/05_ui_ux_design.md">Screen-by-screen breakdown and interaction design.</File>
-    <File path="docs/specs/06_technical_architecture.md">Tech stack and Zero-Fragmentation policy.</File>
+    <File path="docs/specs/06_technical_architecture.md">Technical architecture, module boundaries, and system constraints (What NOT to do).</File>
     <File path="docs/specs/07_development_milestones.md">Phase-wise development schedule and milestones.</File>
     <File path="docs/specs/08_voyager_migration_strategy.md">Strategy for migrating UI screens to the Voyager and Kotlin-Inject framework.</File>
     <File path="docs/AGENTS.md">Documentation standards and Mermaid diagram protocols.</File>
@@ -132,3 +132,4 @@
     <Rule>Context Maintenance: Mandatory read/write of SUMMARY.xml for every task.</Rule>
   </StrictConventions>
 </ProjectContext>
+
