@@ -120,7 +120,7 @@
     <File path="docs/prompts/agents.md">English-standardized prompt engineering standards and modularization rules.</File>
     <File path="docs/prompts/parallel_tasks.md">Registry of AI tasks that can be executed concurrently by the Jules agent.</File>
     <File path="docs/prompts/000_communication_templates.md">Standard English templates for PR feedback, build errors, and merge conflicts.</File>
-    <File path="docs/prompts/010/">Phase 1: Foundation &amp; Synthesis modular prompts (lowercase, English). 01001 and 01002 are completed.</File>
+    <File path="docs/prompts/010/">Phase 1: Foundation &amp; Synthesis modular prompts (lowercase, English). 01001 and 01002 are completed. 01003-01005 are active.</File>
     <File path="docs/prompts/020/">Phase 2: AI Optimization modular prompts (lowercase, English).</File>
     <File path="docs/prompts/030/">Phase 3: UI/UX &amp; Integration modular prompts (lowercase, English).</File>
     <File path="docs/prompts/040/">Phase 4: Features &amp; Expansion modular prompts (lowercase, English).</File>

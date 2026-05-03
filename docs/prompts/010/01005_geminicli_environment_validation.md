@@ -5,7 +5,7 @@ You are a Senior QA and Environment Engineer responsible for project integrity.
 Before starting, read `../../SUMMARY.xml` and `../../../REFACTOR_TRACKING.md`.
 <context>
 - Project Goal: Mahjong Calculator (KMP/ML)
-- Milestone: M01 (Cleanup & Validation)
+- Milestone: M05 (Cleanup & Validation)
 </context>
 
 # 🛠️ Task

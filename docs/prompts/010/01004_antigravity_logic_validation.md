@@ -6,7 +6,7 @@ Before starting, read `../../SUMMARY.xml` and `../../../REFACTOR_TRACKING.md`.
 <context>
 - Project Goal: Mahjong Calculator (KMP/ML)
 - Module: app (commonMain)
-- Milestone: M03
+- Milestone: M04
 </context>
 
 # 🛠️ Task

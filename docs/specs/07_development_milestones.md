@@ -7,10 +7,13 @@
 - [x] **Milestone 01002**: Synthesis Pipeline & Scoring Engine
     - 34종 마작 패에 대한 합성 데이터 생성(`ml-pipeline/src/synthesis`) 스크립트 구축.
     - `MahjongCalculator` 핵심 로직 및 14패 아가리(Agari) 판정 엔진 prototype 개발.
-- [ ] **Milestone 01003**: Logic Validation
+- [ ] **Milestone 01003**: Full-scale Training Data Generation
+    - 검증된 합성 파이프라인을 활용한 대규모(100k+) 학습용 데이터셋 생성.
+    - YOLO 포맷 라벨링 데이터 무결성 검사 및 학습 준비 완료.
+- [ ] **Milestone 01004**: Logic Validation
     - 주요 일본 마작 역(Yaku) 및 부수(Fu) 계산 로직 검증 및 단위 테스트.
-    - 데이터 증강(Augmentation)을 통한 학습용 데이터셋 검증.
-- [ ] **Milestone 01004**: Environment Validation
+    - 데이터 증강(Augmentation) 결과물에 대한 최종 검수.
+- [ ] **Milestone 01005**: Environment Validation
     - 전체 프로젝트 환경 설정 최적화 및 빌드 파이프라인 무결성 검사.
 
 ## Phase 2: AI Model Training & Optimization (Weeks 5-8)
