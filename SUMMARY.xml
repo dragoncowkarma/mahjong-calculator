@@ -114,7 +114,7 @@
     <File path="docs/specs/04_key_features.md">Feature roadmap for v1.0 (MVP) and v2.0.</File>
     <File path="docs/specs/05_ui_ux_design.md">Screen-by-screen breakdown and interaction design.</File>
     <File path="docs/specs/06_technical_architecture.md">Technical architecture, module boundaries, and system constraints (What NOT to do).</File>
-    <File path="docs/specs/07_development_milestones.md">Phase-wise development schedule and milestones.</File>
+    <File path="docs/specs/07_development_milestones.md">Phase-wise development schedule and milestones (using phase-scoped IDs 01001-04004).</File>
     <File path="docs/specs/08_voyager_migration_strategy.md">Strategy for migrating UI screens to the Voyager and Kotlin-Inject framework.</File>
     <File path="docs/AGENTS.md">Documentation management rules and AI agent role distribution (Jules, Antigravity, Gemini CLI).</File>
     <File path="docs/prompts/agents.md">English-standardized prompt engineering standards and modularization rules.</File>
