@@ -23,8 +23,14 @@
 2. **Diagram Integrity**: Use `Mermaid` for visualizations; ensure syntax is valid.
 3. **File Integrity**: Ensure exactly `1 empty line` at the end of every file (`EOF`).
 
+## Planning and Task Management
+1. **Parallel Processing Assessment**: When new tasks emerge from planning changes, agents MUST evaluate if they are `parallelizable`.
+    1.1. **Restricted Scope**: Parallel execution is strictly for the `Jules` agent to handle independent logic or ML tasks.
+    1.2. **Registry Synchronization**: Register any parallelizable task in `docs/prompts/parallel_tasks.md` before execution.
+
 ## Definition of Done
 1. Ensure all newly created or modified documents are correctly listed in `../SUMMARY.xml`.
 2. `Verify every internal link uses a valid relative path and resolves correctly.`
 3. Run `python3 ~/Desktop/agent-md-linter/agent_md_linter.py AGENTS.md` to ensure zero errors.
 4. Confirm the document satisfies 100% of the `USER_REQUEST`.
+
