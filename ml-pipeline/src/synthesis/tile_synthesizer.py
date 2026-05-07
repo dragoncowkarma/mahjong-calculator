@@ -94,7 +94,7 @@ def get_base_dir():
     # Returns ml-pipeline/
     return os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100):
+def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100, start_index=0):
     """
     Generate synthetic Mahjong tile images with bounding boxes.
     """
@@ -243,8 +243,8 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100):
             if not final_bboxes:
                 continue
 
-            img_filename = f"synth_{generated:04d}.jpg"
-            lbl_filename = f"synth_{generated:04d}.txt"
+            img_filename = f"synth_{start_index + generated:04d}.jpg"
+            lbl_filename = f"synth_{start_index + generated:04d}.txt"
 
             cv2.imwrite(os.path.join(img_out_dir, img_filename), final_img)
 
@@ -269,5 +269,6 @@ if __name__ == "__main__":
         os.path.join(project_root, "mahjong-tiles-image"),
         os.path.join(base_dir, "data", "raw", "backgrounds"),
         os.path.join(base_dir, "data", "synthetic"),
-        count=100
+        count=100,
+        start_index=400
     )
