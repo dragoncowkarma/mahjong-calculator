@@ -94,11 +94,11 @@ def get_base_dir():
     # Returns ml-pipeline/
     return os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100):
+def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100, start_idx=0):
     """
     Generate synthetic Mahjong tile images with bounding boxes.
     """
-    print(f"Generating {count} synthetic images...")
+    print(f"Generating {count} synthetic images starting from index {start_idx}...")
 
     img_out_dir = os.path.join(output_dir, "images")
     lbl_out_dir = os.path.join(output_dir, "labels")
@@ -243,8 +243,8 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100):
             if not final_bboxes:
                 continue
 
-            img_filename = f"synth_{generated:04d}.jpg"
-            lbl_filename = f"synth_{generated:04d}.txt"
+            img_filename = f"synth_{start_idx + generated:04d}.jpg"
+            lbl_filename = f"synth_{start_idx + generated:04d}.txt"
 
             cv2.imwrite(os.path.join(img_out_dir, img_filename), final_img)
 
@@ -263,11 +263,18 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100):
         print(f"Successfully generated {generated} images.")
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--count', type=int, default=100)
+    parser.add_argument('--start-idx', type=int, default=0)
+    args = parser.parse_args()
+
     base_dir = get_base_dir()
     project_root = os.path.dirname(base_dir)
     generate_synthetic_data(
         os.path.join(project_root, "mahjong-tiles-image"),
         os.path.join(base_dir, "data", "raw", "backgrounds"),
         os.path.join(base_dir, "data", "synthetic"),
-        count=100
+        count=args.count,
+        start_idx=args.start_idx
     )
