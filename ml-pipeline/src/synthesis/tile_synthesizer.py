@@ -94,7 +94,7 @@ def get_base_dir():
     # Returns ml-pipeline/
     return os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100):
+def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100, start_index=0):
     """
     Generate synthetic Mahjong tile images with bounding boxes.
     """
@@ -126,11 +126,12 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100):
 
     tile_names = list(tiles.keys())
 
-    generated = 0
+    generated = start_index
+    target = start_index + count
     attempts = 0
     max_attempts = count * 10
 
-    while generated < count and attempts < max_attempts:
+    while generated < target and attempts < max_attempts:
         attempts += 1
         bg = random.choice(backgrounds).copy()
         bg_h, bg_w = bg.shape[:2]
@@ -257,10 +258,10 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100):
         except Exception as e:
             print(f"Error applying transform: {e}")
 
-    if generated < count:
-        print(f"Warning: Only generated {generated}/{count} images after {max_attempts} attempts.")
+    if generated < target:
+        print(f"Warning: Only generated {generated - start_index}/{count} images after {max_attempts} attempts.")
     else:
-        print(f"Successfully generated {generated} images.")
+        print(f"Successfully generated {generated - start_index} images.")
 
 if __name__ == "__main__":
     base_dir = get_base_dir()
@@ -269,5 +270,6 @@ if __name__ == "__main__":
         os.path.join(project_root, "mahjong-tiles-image"),
         os.path.join(base_dir, "data", "raw", "backgrounds"),
         os.path.join(base_dir, "data", "synthetic"),
-        count=100
+        count=100,
+        start_index=100
     )
