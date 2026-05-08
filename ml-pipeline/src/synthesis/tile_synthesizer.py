@@ -265,9 +265,9 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100, start_i
 
 if __name__ == "__main__":
     import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--count", type=int, default=100)
-    parser.add_argument("--start_idx", type=int, default=0)
+    parser = argparse.ArgumentParser(description="Generate synthetic Mahjong tile images.")
+    parser.add_argument("--count", type=int, default=100, help="Number of images to generate")
+    parser.add_argument("--start-idx", type=int, default=0, help="Starting index for image naming")
     args = parser.parse_args()
 
     base_dir = get_base_dir()
