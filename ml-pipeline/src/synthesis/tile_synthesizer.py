@@ -98,7 +98,7 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100, start_i
     """
     Generate synthetic Mahjong tile images with bounding boxes.
     """
-    print(f"Generating {count} synthetic images...")
+    print(f"Generating {count} synthetic images starting at {start_idx}...")
 
     img_out_dir = os.path.join(output_dir, "images")
     lbl_out_dir = os.path.join(output_dir, "labels")
@@ -264,12 +264,18 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100, start_i
         print(f"Successfully generated {generated} images.")
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="Generate synthetic Mahjong tile images.")
+    parser.add_argument("--count", type=int, default=100, help="Number of images to generate")
+    parser.add_argument("--start-idx", type=int, default=0, help="Starting index for image naming")
+    args = parser.parse_args()
+
     base_dir = get_base_dir()
     project_root = os.path.dirname(base_dir)
     generate_synthetic_data(
         os.path.join(project_root, "mahjong-tiles-image"),
         os.path.join(base_dir, "data", "raw", "backgrounds"),
         os.path.join(base_dir, "data", "synthetic"),
-        count=200,
-        start_idx=1000
+        count=args.count,
+        start_idx=args.start_idx
     )
