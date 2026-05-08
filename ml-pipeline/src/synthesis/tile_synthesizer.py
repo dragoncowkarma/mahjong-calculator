@@ -98,7 +98,7 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100, start_i
     """
     Generate synthetic Mahjong tile images with bounding boxes.
     """
-    print(f"Generating {count} synthetic images...")
+    print(f"Generating {count} synthetic images starting at {start_idx}...")
 
     img_out_dir = os.path.join(output_dir, "images")
     lbl_out_dir = os.path.join(output_dir, "labels")
