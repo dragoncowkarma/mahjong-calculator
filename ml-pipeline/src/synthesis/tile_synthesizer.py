@@ -246,6 +246,9 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100, start_i
 
             img_filename = f"synth_{start_idx + generated:04d}.jpg"
             lbl_filename = f"synth_{start_idx + generated:04d}.txt"
+            current_idx = start_idx + generated
+            img_filename = f"synth_{current_idx:04d}.jpg"
+            lbl_filename = f"synth_{current_idx:04d}.txt"
 
             cv2.imwrite(os.path.join(img_out_dir, img_filename), final_img)
 
