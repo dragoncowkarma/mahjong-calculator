@@ -32,7 +32,3 @@ iosApp/DerivedData/
 iosApp/*.xcworkspace/
 iosApp/Pods/
 iosApp/build/
-ml-pipeline/data/synthetic/
-
-# Data directories
-ml-pipeline/data/synthetic/

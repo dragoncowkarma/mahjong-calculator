@@ -271,5 +271,5 @@ if __name__ == "__main__":
         os.path.join(base_dir, "data", "raw", "backgrounds"),
         os.path.join(base_dir, "data", "synthetic"),
         count=100,
-        start_index=100
+        start_index=2000
     )
