@@ -21,3 +21,4 @@ scikit-learn>=1.2.0
 onnx>=1.14.0
 coremltools>=7.0  # For .mlmodel export
 tensorflow>=2.13.0  # For .tflite export
+albumentations>=1.3.0
