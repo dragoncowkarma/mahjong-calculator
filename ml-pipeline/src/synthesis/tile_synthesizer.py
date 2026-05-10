@@ -127,11 +127,12 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100, start_i
 
     tile_names = list(tiles.keys())
 
-    generated = 0
+    generated = start_index
+    target = start_index + count
     attempts = 0
     max_attempts = count * 10
 
-    while generated < count and attempts < max_attempts:
+    while generated < target and attempts < max_attempts:
         attempts += 1
         bg = random.choice(backgrounds).copy()
         bg_h, bg_w = bg.shape[:2]
@@ -261,10 +262,10 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100, start_i
         except Exception as e:
             print(f"Error applying transform: {e}")
 
-    if generated < count:
-        print(f"Warning: Only generated {generated}/{count} images after {max_attempts} attempts.")
+    if generated < target:
+        print(f"Warning: Only generated {generated - start_index}/{count} images after {max_attempts} attempts.")
     else:
-        print(f"Successfully generated {generated} images.")
+        print(f"Successfully generated {generated - start_index} images.")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate synthetic Mahjong tile images.")
