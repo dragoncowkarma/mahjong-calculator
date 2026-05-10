@@ -1,3 +1,4 @@
+import argparse
 import os
 import random
 import cv2
@@ -98,7 +99,7 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100, start_i
     """
     Generate synthetic Mahjong tile images with bounding boxes.
     """
-    print(f"Generating {count} synthetic images starting at {start_idx}...")
+    print(f"Generating {count} synthetic images starting at index {start_idx}...")
 
     img_out_dir = os.path.join(output_dir, "images")
     lbl_out_dir = os.path.join(output_dir, "labels")
@@ -243,6 +244,8 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100, start_i
             if not final_bboxes:
                 continue
 
+            img_filename = f"synth_{start_idx + generated:04d}.jpg"
+            lbl_filename = f"synth_{start_idx + generated:04d}.txt"
             current_idx = start_idx + generated
             img_filename = f"synth_{current_idx:04d}.jpg"
             lbl_filename = f"synth_{current_idx:04d}.txt"
@@ -264,10 +267,9 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100, start_i
         print(f"Successfully generated {generated} images.")
 
 if __name__ == "__main__":
-    import argparse
     parser = argparse.ArgumentParser(description="Generate synthetic Mahjong tile images.")
-    parser.add_argument("--count", type=int, default=100, help="Number of images to generate")
-    parser.add_argument("--start-idx", type=int, default=0, help="Starting index for image naming")
+    parser.add_argument("--count", type=int, default=100, help="Number of images to generate.")
+    parser.add_argument("--start_idx", type=int, default=0, help="Starting index for generated image filenames.")
     args = parser.parse_args()
 
     base_dir = get_base_dir()
