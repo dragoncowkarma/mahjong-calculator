@@ -1,3 +1,4 @@
+import argparse
 import os
 import random
 import cv2
@@ -94,11 +95,11 @@ def get_base_dir():
     # Returns ml-pipeline/
     return os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100, start_index=0):
+def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100, start_idx=0):
     """
     Generate synthetic Mahjong tile images with bounding boxes.
     """
-    print(f"Generating {count} synthetic images...")
+    print(f"Generating {count} synthetic images starting at index {start_idx}...")
 
     img_out_dir = os.path.join(output_dir, "images")
     lbl_out_dir = os.path.join(output_dir, "labels")
@@ -244,8 +245,11 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100, start_i
             if not final_bboxes:
                 continue
 
-            img_filename = f"synth_{generated:04d}.jpg"
-            lbl_filename = f"synth_{generated:04d}.txt"
+            img_filename = f"synth_{start_idx + generated:04d}.jpg"
+            lbl_filename = f"synth_{start_idx + generated:04d}.txt"
+            current_idx = start_idx + generated
+            img_filename = f"synth_{current_idx:04d}.jpg"
+            lbl_filename = f"synth_{current_idx:04d}.txt"
 
             cv2.imwrite(os.path.join(img_out_dir, img_filename), final_img)
 
@@ -264,12 +268,17 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100, start_i
         print(f"Successfully generated {generated - start_index} images.")
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Generate synthetic Mahjong tile images.")
+    parser.add_argument("--count", type=int, default=100, help="Number of images to generate.")
+    parser.add_argument("--start_idx", type=int, default=0, help="Starting index for generated image filenames.")
+    args = parser.parse_args()
+
     base_dir = get_base_dir()
     project_root = os.path.dirname(base_dir)
     generate_synthetic_data(
         os.path.join(project_root, "mahjong-tiles-image"),
         os.path.join(base_dir, "data", "raw", "backgrounds"),
         os.path.join(base_dir, "data", "synthetic"),
-        count=100,
-        start_index=2000
+        count=args.count,
+        start_idx=args.start_idx
     )
