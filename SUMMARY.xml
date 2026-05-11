@@ -21,7 +21,7 @@
       <Description>The mobile application module (Kotlin Multiplatform). Contains composeApp (shared) and iosApp (native wrapper).</Description>
     </Module>
     <Module name="ml-pipeline">
-      <Description>AI development pipeline (Python). Responsible for synthetic data generation, YOLO model training, and model export. The tile synthesizer now includes Albumentations-based data augmentation (Blur, Noise, Perspective) and automatically generates labels in YOLO format to ensure roboust training dataset. It also supports offset indexing (`start_idx`) for distributed generation.</Description>
+      <Description>AI development pipeline (Python). Responsible for synthetic data generation, YOLO model training, and model export. The tile synthesizer now includes Albumentations-based data augmentation (Blur, Noise, Perspective) and automatically generates labels in YOLO format to ensure robust training dataset. The dataset has been reorganized to merge temp files and standardize numbering (0100-0399 range). It also supports offset indexing (`start_idx`) for distributed generation.</Description>
     </Module>
   </ProjectStructure>
 

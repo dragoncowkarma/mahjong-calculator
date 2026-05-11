@@ -11,10 +11,6 @@
 ml-pipeline/venv/
 ml-pipeline/__pycache__/
 ml-pipeline/.ipynb_checkpoints/
-ml-pipeline/data/processed/*
-!ml-pipeline/data/synthetic/.gitkeep
-!ml-pipeline/data/processed/.gitkeep
-ml-pipeline/runs/  # YOLO training outputs
 
 # Android/Kotlin (Root level if applicable)
 .gradle/
