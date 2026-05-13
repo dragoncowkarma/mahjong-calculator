@@ -93,6 +93,24 @@ object YakuCalculator {
             totalHan += 2 // Assuming closed for now
         }
 
+        if (isShousangen(melds)) {
+            yakuList.add("소삼원")
+            totalHan += 2
+        }
+
+        if (isHonroto(melds)) {
+            yakuList.add("혼로토")
+            totalHan += 2
+        }
+
+        if (isChinitsu(melds)) {
+            yakuList.add("청일색")
+            totalHan += 6
+        } else if (isHonitsu(melds)) {
+            yakuList.add("혼일색")
+            totalHan += 3
+        }
+
         return Pair(yakuList, totalHan)
     }
 
@@ -212,5 +230,60 @@ object YakuCalculator {
         }
 
         return false
+    }
+
+    private fun isShousangen(melds: List<Meld>): Boolean {
+        var dragonTriplets = 0
+        var dragonPair = 0
+        for (meld in melds) {
+            if (meld.type == 2 && meld.tiles[0] in 31..33) dragonTriplets++
+            if (meld.type == 0 && meld.tiles[0] in 31..33) dragonPair++
+        }
+        return dragonTriplets == 2 && dragonPair == 1
+    }
+
+    private fun isHonroto(melds: List<Meld>): Boolean {
+        for (meld in melds) {
+            for (tile in meld.tiles) {
+                if (tile !in TERMINALS_AND_HONORS) return false
+            }
+        }
+        return true
+    }
+
+    private fun isHonitsu(melds: List<Meld>): Boolean {
+        var hasHonor = false
+        var suit = -1
+        for (meld in melds) {
+            for (tile in meld.tiles) {
+                if (tile in 27..33) {
+                    hasHonor = true
+                } else {
+                    val currentSuit = tile / 9
+                    if (suit == -1) {
+                        suit = currentSuit
+                    } else if (suit != currentSuit) {
+                        return false
+                    }
+                }
+            }
+        }
+        return hasHonor && suit != -1
+    }
+
+    private fun isChinitsu(melds: List<Meld>): Boolean {
+        var suit = -1
+        for (meld in melds) {
+            for (tile in meld.tiles) {
+                if (tile in 27..33) return false
+                val currentSuit = tile / 9
+                if (suit == -1) {
+                    suit = currentSuit
+                } else if (suit != currentSuit) {
+                    return false
+                }
+            }
+        }
+        return suit != -1
     }
 }

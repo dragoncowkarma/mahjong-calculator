@@ -13,6 +13,7 @@ object MahjongCalculator {
      * @return Pair of <List of Yaku Names, Total Fu> or Pair(emptyList, 0) if invalid
      */
     fun calculate(hand: IntArray, winningTile: Int, context: MatchContext): Pair<List<String>, Int> {
+        if (context.isFuriten && !context.isTsumo) return Pair(emptyList(), 0) // Cannot Ron when Furiten
         if (hand.size != 14) return Pair(emptyList(), 0)
 
         val counts = IntArray(34)

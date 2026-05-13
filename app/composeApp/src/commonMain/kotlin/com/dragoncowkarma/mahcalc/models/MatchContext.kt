@@ -7,5 +7,6 @@ data class MatchContext(
     val isDealer: Boolean = false,
     val isTsumo: Boolean = false,
     val isRiichi: Boolean = false,
-    val doraCount: Int = 0
+    val doraCount: Int = 0,
+    val isFuriten: Boolean = false
 )
