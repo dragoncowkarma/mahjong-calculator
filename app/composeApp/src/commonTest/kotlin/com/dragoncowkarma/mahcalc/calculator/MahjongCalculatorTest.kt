@@ -1,5 +1,6 @@
 package com.dragoncowkarma.mahcalc.calculator
 
+import com.dragoncowkarma.mahcalc.models.LocalRules
 import com.dragoncowkarma.mahcalc.models.MatchContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -119,27 +120,6 @@ class MahjongCalculatorTest {
         // Melds: +0
         // Total = 26 -> 30 fu
         assertEquals(30, fu)
-    }
-
-    @Test
-    fun testKanchanWait2() {
-        // Renaming original testKanchanWait to this if it already existed, or add new one
-        // Wait on 2m inside 1m 3m
-        val hand = intArrayOf(
-            0, 2, 3, // 1m, 3m, 4m (wait 2m)
-            12, 13, 14,
-            24, 25, 26,
-            27, 27, 27,
-            28, 28
-        )
-        val context = MatchContext(isTsumo = false)
-        val (yaku, fu) = MahjongCalculator.calculate(hand, winningTile = 1, context = context)
-
-        // Wait on 2m, makes it 123m (0, 1, 2) and an extra 4m? Wait, the math:
-        // 13m + 456p + 789s + EEE + SS -> incomplete.
-        // Let's do 13m (wait 2m), 456p, 789s, EEE, SS.
-        // Total hand tiles without winning = 13.
-        // Wait, MahjongCalculator.calculate takes full hand (14 tiles)
     }
 
     @Test
@@ -326,7 +306,7 @@ class MahjongCalculatorTest {
         )
 
         // Use custom LocalRules
-        val localRules = com.dragoncowkarma.mahcalc.models.LocalRules(akadoraEnabled = true, kuikaeProhibited = true)
+        val localRules = LocalRules(akadoraEnabled = true, kuikaeProhibited = true)
         val context = MatchContext(isTsumo = true, localRules = localRules)
         val (yaku, fu) = MahjongCalculator.calculate(hand, winningTile = 22, context = context)
 
