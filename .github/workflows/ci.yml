@@ -1,0 +1,54 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  app-validation:
+    name: KMP App Validation
+    runs-on: macos-latest # Using macOS for iOS build support
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+          
+      - name: Build and Test (Common)
+        working-directory: app
+        run: ./gradlew :composeApp:allTests --stacktrace
+
+  ml-pipeline-validation:
+    name: ML Pipeline Validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+          
+      - name: Install dependencies
+        working-directory: ml-pipeline
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          
+      - name: Lint with ruff
+        working-directory: ml-pipeline
+        run: ruff check .
+        
+      - name: Dataset Integrity Check
+        run: python3 ml-pipeline/src/utils/check_labels.py
+        
+      - name: Protocol Enforcement
+        run: python3 scripts/agent_md_linter.py AGENTS.md app/AGENTS.md ml-pipeline/AGENTS.md docs/AGENTS.md
