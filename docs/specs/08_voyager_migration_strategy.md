@@ -1,15 +1,14 @@
-# 08. Voyager 마이그레이션 전략
+# 08. Voyager 아키텍처 규약 (Convention)
 
 ## 개요 (Overview)
-이 문서는 기존 Jetpack Compose 화면을 **Voyager** 라우팅 프레임워크로 마이그레이션하고, 의존성 주입(DI)을 위해 **Kotlin-Inject**를 활용하는 전략을 정의합니다.
+이 문서는 **Voyager** 라우팅 프레임워크 및 **Kotlin-Inject** DI 프레임워크의 사용 규약을 정의합니다. 초기 마이그레이션이 완료된 상태이며, 이후 모든 신규 화면은 이 규약을 엄격히 준수해야 합니다.
 
 ## 1. 마이그레이션 상태 (Migration Status)
 `Voyager` 및 `Kotlin-Inject`를 위한 핵심 인프라는 기존 KMP 설정을 유지하며 `libs.versions.toml` 및 `app/composeApp/build.gradle.kts`에 성공적으로 통합되었습니다.
 
 `YakuCalculationScreen`을 포함한 기존 화면들은 이미 이 구조에 맞춰 아키텍처 조정이 완료된 상태입니다.
 
-## 2. UI 로직 리팩토링 전략
-기존 로직을 유지하며 안전하게 Voyager로 마이그레이션하기 위해 다음 패턴을 준수해야 합니다.
+## 2. UI 로직 규약 (Convention)
 
 ### 화면 구현 (Screen Implementation)
 - 각각의 독립적인 UI 흐름은 Voyager의 `Screen` 인터페이스를 구현해야 합니다.

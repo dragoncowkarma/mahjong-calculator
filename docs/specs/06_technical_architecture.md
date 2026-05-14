@@ -19,20 +19,43 @@
 - **App/ML -> Shared Core**: 두 모듈 모두 동일한 도메인 로직(Shared Core)을 상속해야 합니다.
 - **App <-> ML**: 직접적인 의존성 없음. ML 모듈은 결과물(`.tflite`, `.mlmodel`)을 생성하고, App 모듈은 이를 리소스로 소비합니다.
 
-## 3. 시스템 제약 사항 (권장되지 않는 사항)
+## 3. 성능 SLA (Service Level Agreement)
+
+| 지표 | 목표 | 측정 방법 |
+| :--- | :--- | :--- |
+| **계산 엔진 레이턴시** | < 50ms | `(Hand, GameContext) -> Result` 호출 시간 |
+| **패 인식 프레임 처리** | < 200ms/프레임 | 단일 프레임 인퍼런스 시간 (디바이스 내) |
+| **UI 프레임 레이트** | ≥ 60fps | Compose recomposition 포함 |
+| **앱 콜드 스타트** | < 2초 | 스플래시→메인 화면 도달 시간 |
+| **ML 모델 크기** | ≤ 10MB | 단일 `.tflite` 또는 `.mlmodel` 파일 |
+
+## 4. 최소 지원 사양
+
+| 플랫폼 | 최소 버전 | 비고 |
+| :--- | :--- | :--- |
+| **Android** | API 26 (Android 8.0) | CameraX 호환성 기준 |
+| **iOS** | iOS 16.0 | Vision Framework 호환성 기준 |
+
+## 5. 모델 업데이트 전략
+
+- **v1.x**: ML 모델은 앱 바이너리에 번들. 모델 업데이트 = 앱 업데이트.
+- **v2.0 (계획)**: Firebase ML Custom Model 등을 활용한 OTA(Over-The-Air) 모델 업데이트 도입 검토.
+
+## 6. 시스템 제약 사항 (권장되지 않는 사항)
 
 AI 에이전트는 아키텍처의 부패를 방지하기 위해 다음 규칙을 준수해야 합니다.
 
 - **제약 1 (플랫폼 로직 금지)**: 비즈니스 로직을 `androidMain`이나 `iosMain`에 구현하지 마십시오. 하드웨어 전용 호출에만 `expect/actual`을 사용하십시오.
 - **제약 2 (ML 파이프라인 내 UI 금지)**: `ml-pipeline`은 헤드리스(Headless) 데이터/학습 모듈로 유지되어야 합니다. GUI 프레임워크(Tkinter, Qt 등) 사용은 허용되지 않습니다.
 - **제약 3 (외부 계산기 사용 금지)**: 모든 점수 계산은 `Shared Core` 로직 내에서 이루어져야 합니다. 승인되지 않은 외부 라이브러리 사용을 금지합니다.
-- **제약 4 (상태 비저장 엔진)**: 계산 엔진은 영구 상태(DB, Preference 등)에 의존해서는 안 됩니다. `(Hand, GameContext) -> Result` 형태의 순수 함수여야 합니다.
+- **제약 4 (상태 비저장 엔진)**: 계산 엔진은 영구 상태(DB, Preference 등)에 의존해서는 안 됩니다. `(Hand, GameContext) -> Result` 형태의 순수 함수여야 합니다. (세션 기록은 별도 저장 계층에서 처리)
 - **제약 5 (한국어 지역화)**: 사용자에게 노출되는 모든 역(Yaku) 이름과 UI 문자열은 **한국어**로 작성되어야 합니다.
 
-## 4. 기술 스택 (Tech Stack)
+## 7. 기술 스택 (Tech Stack)
 
 - **UI**: Compose Multiplatform
 - **내비게이션**: Voyager (Screen/ScreenModel)
 - **DI**: Kotlin-Inject (KSP)
 - **ML**: YOLOv8/v11 Nano -> TFLite / CoreML
 - **데이터 증강**: PyTorch, Albumentations (Blur, Noise, Perspective)
+- **로컬 DB (v2.0)**: SQLDelight

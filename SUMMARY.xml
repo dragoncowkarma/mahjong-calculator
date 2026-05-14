@@ -115,7 +115,11 @@
     <File path="docs/specs/05_ui_ux_design.md">Screen-by-screen breakdown and interaction design.</File>
     <File path="docs/specs/06_technical_architecture.md">Technical architecture, module boundaries, and system constraints (What NOT to do).</File>
     <File path="docs/specs/07_development_milestones.md">Phase-wise development schedule and milestones (using phase-scoped IDs 01001-04004).</File>
-    <File path="docs/specs/08_voyager_migration_strategy.md">Strategy for migrating UI screens to the Voyager and Kotlin-Inject framework.</File>
+    <File path="docs/specs/08_voyager_migration_strategy.md">Voyager and Kotlin-Inject architecture convention (Screen/ScreenModel patterns, DI integration).</File>
+    <File path="docs/specs/09_risk_management.md">Risk matrix (technical, operational, market) with mitigation strategies and response process.</File>
+    <File path="docs/specs/10_kpi_and_metrics.md">Technical and user KPIs, milestone gate criteria, and success measurement definitions.</File>
+    <File path="docs/specs/11_test_strategy.md">Test types, Yaku verification matrix, edge case coverage, device compatibility, and CI/CD plan.</File>
+    <File path="docs/specs/12_wbs.md">Work Breakdown Structure with critical path, quality gates, parallel tracks, and resource allocation.</File>
     <File path="docs/AGENTS.md">Documentation management rules and AI agent role distribution (Jules, Antigravity, Gemini CLI).</File>
     <File path="docs/prompts/agents.md">English-standardized prompt engineering standards and modularization rules.</File>
     <File path="docs/prompts/parallel_tasks.md">Registry of AI tasks that can be executed concurrently by the Jules agent.</File>
