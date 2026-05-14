@@ -95,16 +95,39 @@ def get_base_dir():
     # Returns ml-pipeline/
     return os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100, start_idx=0):
+def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100, start_idx=0, skip_existing=False, fill_gaps=False):
     """
     Generate synthetic Mahjong tile images with bounding boxes.
     """
-    print(f"Generating {count} synthetic images starting at index {start_idx}...")
-
     img_out_dir = os.path.join(output_dir, "images")
     lbl_out_dir = os.path.join(output_dir, "labels")
     os.makedirs(img_out_dir, exist_ok=True)
     os.makedirs(lbl_out_dir, exist_ok=True)
+
+    existing_indices = set()
+    if skip_existing or fill_gaps:
+        for f in os.listdir(img_out_dir):
+            if f.startswith("synth_") and f.endswith(".jpg"):
+                try:
+                    idx = int(f.replace("synth_", "").replace(".jpg", ""))
+                    existing_indices.add(idx)
+                except ValueError:
+                    continue
+
+    if fill_gaps:
+        print(f"Filling gaps in synthetic images up to index {count}...")
+        indices_to_generate = [i for i in range(count) if i not in existing_indices]
+    else:
+        print(f"Generating {count} synthetic images starting at index {start_idx}...")
+        indices_to_generate = list(range(start_idx, start_idx + count))
+        if skip_existing:
+            indices_to_generate = [i for i in indices_to_generate if i not in existing_indices]
+
+    if not indices_to_generate:
+        print("No images to generate.")
+        return
+
+    print(f"Plan to generate {len(indices_to_generate)} images.")
 
     tiles = load_tiles(raw_tile_dir)
     backgrounds = load_backgrounds(bg_dir)
@@ -120,165 +143,169 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100, start_i
     transform = A.Compose([
         A.Perspective(scale=(0.05, 0.1), p=0.5),
         A.GaussianBlur(blur_limit=(3, 7), p=0.5),
-        A.GaussNoise(std_range=(0.05, 0.2), p=0.5),
+        A.GaussNoise(var_limit=(10.0, 50.0), p=0.5),
         A.HueSaturationValue(hue_shift_limit=20, sat_shift_limit=30, val_shift_limit=20, p=0.5),
         A.RandomBrightnessContrast(p=0.5)
     ], bbox_params=A.BboxParams(format='yolo', min_visibility=0.1, label_fields=['class_labels']))
 
     tile_names = list(tiles.keys())
 
-    generated = start_index
-    target = start_index + count
-    attempts = 0
-    max_attempts = count * 10
+    generated_count = 0
+    total_to_generate = len(indices_to_generate)
+    
+    for current_idx in indices_to_generate:
+        attempts = 0
+        max_attempts = 10
+        success = False
 
-    while generated < target and attempts < max_attempts:
-        attempts += 1
-        bg = random.choice(backgrounds).copy()
-        bg_h, bg_w = bg.shape[:2]
+        while not success and attempts < max_attempts:
+            attempts += 1
+            bg = random.choice(backgrounds).copy()
+            bg_h, bg_w = bg.shape[:2]
 
-        num_tiles = random.randint(5, 14)
-        bboxes = []
-        labels = []
+            num_tiles = random.randint(5, 14)
+            bboxes = []
+            labels = []
 
-        # Place tiles ensuring NO overlap
-        placed_boxes = []  # To track (x1, y1, x2, y2) of placed tiles
+            # Place tiles ensuring NO overlap
+            placed_boxes = []  # To track (x1, y1, x2, y2) of placed tiles
 
-        for _ in range(num_tiles):
-            t_name = random.choice(tile_names)
-            t_img = tiles[t_name]
+            for _ in range(num_tiles):
+                t_name = random.choice(tile_names)
+                t_img = tiles[t_name]
 
-            # Resize tile randomly
-            scale = random.uniform(0.5, 1.5)
-            new_w = int(t_img.shape[1] * scale)
-            new_h = int(t_img.shape[0] * scale)
-            if new_w <= 0 or new_h <= 0:
-                continue
+                # Resize tile randomly
+                scale = random.uniform(0.5, 1.5)
+                new_w = int(t_img.shape[1] * scale)
+                new_h = int(t_img.shape[0] * scale)
+                if new_w <= 0 or new_h <= 0:
+                    continue
 
-            t_img_resized = cv2.resize(t_img, (new_w, new_h))
+                t_img_resized = cv2.resize(t_img, (new_w, new_h))
 
-            # Apply random rotation to the tile image
-            angle = random.uniform(-180, 180)
-            center = (new_w // 2, new_h // 2)
-            rot_mat = cv2.getRotationMatrix2D(center, angle, 1.0)
+                # Apply random rotation to the tile image
+                angle = random.uniform(-180, 180)
+                center = (new_w // 2, new_h // 2)
+                rot_mat = cv2.getRotationMatrix2D(center, angle, 1.0)
 
-            # Calculate new bounding box for the rotated image
-            cos = np.abs(rot_mat[0, 0])
-            sin = np.abs(rot_mat[0, 1])
-            rot_w = int((new_h * sin) + (new_w * cos))
-            rot_h = int((new_h * cos) + (new_w * sin))
+                # Calculate new bounding box for the rotated image
+                cos = np.abs(rot_mat[0, 0])
+                sin = np.abs(rot_mat[0, 1])
+                rot_w = int((new_h * sin) + (new_w * cos))
+                rot_h = int((new_h * cos) + (new_w * sin))
 
-            # Adjust rotation matrix to account for translation
-            rot_mat[0, 2] += (rot_w / 2) - center[0]
-            rot_mat[1, 2] += (rot_h / 2) - center[1]
+                # Adjust rotation matrix to account for translation
+                rot_mat[0, 2] += (rot_w / 2) - center[0]
+                rot_mat[1, 2] += (rot_h / 2) - center[1]
 
-            t_img_rotated = cv2.warpAffine(t_img_resized, rot_mat, (rot_w, rot_h), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT, borderValue=(0, 0, 0, 0))
+                t_img_rotated = cv2.warpAffine(t_img_resized, rot_mat, (rot_w, rot_h), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT, borderValue=(0, 0, 0, 0))
 
-            # Random position with overlap check
-            max_x = bg_w - rot_w
-            max_y = bg_h - rot_h
-            if max_x <= 0 or max_y <= 0:
-                continue
+                # Random position with overlap check
+                max_x = bg_w - rot_w
+                max_y = bg_h - rot_h
+                if max_x <= 0 or max_y <= 0:
+                    continue
 
-            max_placement_attempts = 50
-            placed = False
+                max_placement_attempts = 50
+                placed = False
 
-            for _ in range(max_placement_attempts):
-                x = random.randint(0, max_x)
-                y = random.randint(0, max_y)
+                for _ in range(max_placement_attempts):
+                    x = random.randint(0, max_x)
+                    y = random.randint(0, max_y)
 
-                # Check for overlap
-                overlap = False
-                for bx1, by1, bx2, by2 in placed_boxes:
-                    # If rectangles intersect, there is an overlap
-                    if not (x + rot_w <= bx1 or x >= bx2 or y + rot_h <= by1 or y >= by2):
-                        overlap = True
+                    # Check for overlap
+                    overlap = False
+                    for bx1, by1, bx2, by2 in placed_boxes:
+                        # If rectangles intersect, there is an overlap
+                        if not (x + rot_w <= bx1 or x >= bx2 or y + rot_h <= by1 or y >= by2):
+                            overlap = True
+                            break
+
+                    if not overlap:
+                        placed = True
+                        placed_boxes.append((x, y, x + rot_w, y + rot_h))
                         break
 
-                if not overlap:
-                    placed = True
-                    placed_boxes.append((x, y, x + rot_w, y + rot_h))
-                    break
+                if not placed:
+                    continue # Could not find a non-overlapping spot
 
-            if not placed:
-                continue # Could not find a non-overlapping spot
+                # Add shadow effect under the tile
+                shadow_offset_x = random.randint(5, 15)
+                shadow_offset_y = random.randint(5, 15)
 
-            # Add shadow effect under the tile
-            shadow_offset_x = random.randint(5, 15)
-            shadow_offset_y = random.randint(5, 15)
+                shadow_x = x + shadow_offset_x
+                shadow_y = y + shadow_offset_y
 
-            shadow_x = x + shadow_offset_x
-            shadow_y = y + shadow_offset_y
+                if shadow_x + rot_w <= bg_w and shadow_y + rot_h <= bg_h:
+                    alpha_mask = t_img_rotated[:, :, 3] / 255.0
+                    shadow_alpha = alpha_mask * random.uniform(0.3, 0.5)
+                    for c in range(3):
+                        bg[shadow_y:shadow_y + rot_h, shadow_x:shadow_x + rot_w, c] = (shadow_alpha * 0 + (1 - shadow_alpha) * bg[shadow_y:shadow_y + rot_h, shadow_x:shadow_x + rot_w, c])
 
-            if shadow_x + rot_w <= bg_w and shadow_y + rot_h <= bg_h:
-                alpha_mask = t_img_rotated[:, :, 3] / 255.0
-                shadow_alpha = alpha_mask * random.uniform(0.3, 0.5)
-                for c in range(3):
-                    bg[shadow_y:shadow_y + rot_h, shadow_x:shadow_x + rot_w, c] = (shadow_alpha * 0 + (1 - shadow_alpha) * bg[shadow_y:shadow_y + rot_h, shadow_x:shadow_x + rot_w, c])
+                # Overlay the actual tile, tile has 100% opaque face because of Front composite
+                bg = overlay_image(bg, t_img_rotated, x, y)
 
-            # Overlay the actual tile, tile has 100% opaque face because of Front composite
-            bg = overlay_image(bg, t_img_rotated, x, y)
+                # YOLO format: center_x, center_y, width, height (normalized)
+                cx = (x + rot_w / 2.0) / bg_w
+                cy = (y + rot_h / 2.0) / bg_h
+                nw = rot_w / bg_w
+                nh = rot_h / bg_h
 
-            # YOLO format: center_x, center_y, width, height (normalized)
-            cx = (x + rot_w / 2.0) / bg_w
-            cy = (y + rot_h / 2.0) / bg_h
-            nw = rot_w / bg_w
-            nh = rot_h / bg_h
+                bboxes.append([cx, cy, nw, nh])
+                labels.append(CLASS_MAPPING[t_name])
 
-            bboxes.append([cx, cy, nw, nh])
-            labels.append(CLASS_MAPPING[t_name])
-
-        if not bboxes:
-            continue
-
-        try:
-            # Convert bg from BGR to RGB for albumentations
-            bg_rgb = cv2.cvtColor(bg, cv2.COLOR_BGR2RGB)
-            transformed = transform(image=bg_rgb, bboxes=bboxes, class_labels=labels)
-
-            final_img = cv2.cvtColor(transformed['image'], cv2.COLOR_RGB2BGR)
-            final_bboxes = transformed['bboxes']
-            final_labels = transformed['class_labels']
-
-            # Albumentations might remove bounding boxes if they fall outside the image
-            # Only save if we still have at least one valid bounding box
-            if not final_bboxes:
+            if not bboxes:
                 continue
 
-            img_filename = f"synth_{start_idx + generated:04d}.jpg"
-            lbl_filename = f"synth_{start_idx + generated:04d}.txt"
-            current_idx = start_idx + generated
-            img_filename = f"synth_{current_idx:04d}.jpg"
-            lbl_filename = f"synth_{current_idx:04d}.txt"
+            try:
+                # Convert bg from BGR to RGB for albumentations
+                bg_rgb = cv2.cvtColor(bg, cv2.COLOR_BGR2RGB)
+                transformed = transform(image=bg_rgb, bboxes=bboxes, class_labels=labels)
 
-            cv2.imwrite(os.path.join(img_out_dir, img_filename), final_img)
+                final_img = cv2.cvtColor(transformed['image'], cv2.COLOR_RGB2BGR)
+                final_bboxes = transformed['bboxes']
+                final_labels = transformed['class_labels']
 
-            with open(os.path.join(lbl_out_dir, lbl_filename), "w") as f:
-                for bbox, label in zip(final_bboxes, final_labels):
-                    f.write(f"{int(label)} {bbox[0]:.6f} {bbox[1]:.6f} {bbox[2]:.6f} {bbox[3]:.6f}\n")
+                # Albumentations might remove bounding boxes if they fall outside the image
+                # Only save if we still have at least one valid bounding box
+                if not final_bboxes:
+                    continue
 
-            generated += 1
+                img_filename = f"synth_{current_idx:06d}.jpg"
+                lbl_filename = f"synth_{current_idx:06d}.txt"
 
-        except Exception as e:
-            print(f"Error applying transform: {e}")
+                cv2.imwrite(os.path.join(img_out_dir, img_filename), final_img)
 
-    if generated < target:
-        print(f"Warning: Only generated {generated - start_index}/{count} images after {max_attempts} attempts.")
-    else:
-        print(f"Successfully generated {generated - start_index} images.")
+                with open(os.path.join(lbl_out_dir, lbl_filename), "w") as f:
+                    for bbox, label in zip(final_bboxes, final_labels):
+                        f.write(f"{int(label)} {bbox[0]:.6f} {bbox[1]:.6f} {bbox[2]:.6f} {bbox[3]:.6f}\n")
+
+                generated_count += 1
+                success = True
+                if generated_count % 100 == 0:
+                    print(f"Progress: {generated_count}/{total_to_generate} images generated.")
+
+            except Exception as e:
+                print(f"Error applying transform: {e}")
+
+    print(f"Successfully generated {generated_count} images.")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate synthetic Mahjong tile images.")
     parser.add_argument("--count", type=int, default=100, help="Number of images to generate.")
     parser.add_argument("--start_idx", type=int, default=0, help="Starting index for generated image filenames.")
+    parser.add_argument("--skip_existing", action="store_true", help="Skip indices that already exist in the output directory.")
+    parser.add_argument("--fill_gaps", action="store_true", help="Automatically find and fill gaps in the sequence up to --count.")
     args = parser.parse_args()
 
     base_dir = get_base_dir()
     project_root = os.path.dirname(base_dir)
     generate_synthetic_data(
-        os.path.join(project_root, "mahjong-tiles-image"),
+        os.path.join(base_dir, "data", "raw", "mahjong-tiles-image"),
         os.path.join(base_dir, "data", "raw", "backgrounds"),
         os.path.join(base_dir, "data", "synthetic"),
         count=args.count,
-        start_idx=args.start_idx
+        start_idx=args.start_idx,
+        skip_existing=args.skip_existing,
+        fill_gaps=args.fill_gaps
     )
