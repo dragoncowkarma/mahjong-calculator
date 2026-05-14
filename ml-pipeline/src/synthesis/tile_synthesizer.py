@@ -83,10 +83,64 @@ def overlay_image(bg, fg, x, y):
     if fg.shape[2] == 4:
         alpha = fg[:, :, 3] / 255.0
         for c in range(3):
-            bg[y:y + h, x:x + w, c] = (alpha * fg[:, :, c] + (1 - alpha) * bg[y:y + h, x:x + w, c])
+            bg[y:y + h, x:x + w, c] = (alpha * fg[:, :, c] + (1 - alpha) * bg[y:y + h, x:x + w, c]).astype(np.uint8)
     else:
         bg[y:y + h, x:x + w] = fg
 
+    return bg
+
+def apply_wear_and_tear(tile_img):
+    """Apply subtle wear, dirt, and fading to the tile image."""
+    h, w = tile_img.shape[:2]
+    # Albumentations for tile-specific wear
+    wear_transform = A.Compose([
+        A.CoarseDropout(max_holes=8, max_height=h // 10, max_width=w // 10, min_holes=2, p=0.3),
+        A.GaussNoise(var_limit=(5.0, 30.0), p=0.3),
+        A.RandomBrightnessContrast(brightness_limit=0.1, contrast_limit=0.1, p=0.5),
+        A.HueSaturationValue(sat_shift_limit=10, val_shift_limit=10, p=0.3)
+    ])
+
+    # We only apply to RGB channels, keeping alpha intact
+    if tile_img.shape[2] == 4:
+        rgb = tile_img[:, :, :3]
+        alpha = tile_img[:, :, 3]
+        transformed = wear_transform(image=rgb)
+        new_tile = np.dstack([transformed['image'], alpha])
+        return new_tile
+    else:
+        return wear_transform(image=tile_img)['image']
+
+def add_clutter(bg, backgrounds, num_clutter=3):
+    """Add random non-tile patches to the background to simulate table clutter."""
+    bg_h, bg_w = bg.shape[:2]
+    for _ in range(num_clutter):
+        other_bg = random.choice(backgrounds)
+        oh, ow = other_bg.shape[:2]
+
+        # Crop a random small patch
+        patch_size = random.randint(30, 80)
+        if oh <= patch_size or ow <= patch_size:
+            continue
+
+        py = random.randint(0, oh - patch_size)
+        px = random.randint(0, ow - patch_size)
+        patch = other_bg[py:py + patch_size, px:px + patch_size].copy()
+
+        # Apply random rotation and transparency to patch
+        angle = random.uniform(0, 360)
+        center = (patch_size // 2, patch_size // 2)
+        rot_mat = cv2.getRotationMatrix2D(center, angle, 1.0)
+        patch = cv2.warpAffine(patch, rot_mat, (patch_size, patch_size), borderMode=cv2.BORDER_CONSTANT, borderValue=(0, 0, 0))
+
+        # Random position on bg
+        tx = random.randint(0, max(0, bg_w - patch_size))
+        ty = random.randint(0, max(0, bg_h - patch_size))
+
+        # Blend patch
+        alpha = random.uniform(0.1, 0.4)
+        region = bg[ty:ty + patch_size, tx:tx + patch_size]
+        if region.shape[:2] == patch.shape[:2]:
+            bg[ty:ty + patch_size, tx:tx + patch_size] = cv2.addWeighted(region, 1 - alpha, patch, alpha, 0)
     return bg
 
 def get_base_dir():
@@ -139,14 +193,28 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100, start_i
         print(f"No backgrounds found in {bg_dir}!")
         return
 
-    # Albumentations transform with Perspective, Blur, Noise, etc.
+    # Enhanced Albumentations transform for domain adaptation
     transform = A.Compose([
-        A.Perspective(scale=(0.05, 0.1), p=0.5),
-        A.GaussianBlur(blur_limit=(3, 7), p=0.5),
-        A.GaussNoise(var_limit=(10.0, 50.0), p=0.5),
-        A.HueSaturationValue(hue_shift_limit=20, sat_shift_limit=30, val_shift_limit=20, p=0.5),
-        A.RandomBrightnessContrast(p=0.5)
-    ], bbox_params=A.BboxParams(format='yolo', min_visibility=0.1, label_fields=['class_labels']))
+        A.Perspective(scale=(0.05, 0.12), p=0.6),
+        A.OneOf([
+            A.GaussianBlur(blur_limit=(3, 7), p=0.5),
+            A.MotionBlur(blur_limit=(3, 7), p=0.5),
+            A.MedianBlur(blur_limit=5, p=0.5),
+        ], p=0.5),
+        A.OneOf([
+            A.GaussNoise(var_limit=(10.0, 50.0), p=0.5),
+            A.ISONoise(p=0.5),
+            A.MultiplicativeNoise(p=0.5),
+        ], p=0.3),
+        A.OneOf([
+            A.RandomSunFlare(flare_roi=(0, 0, 1, 0.5), angle_lower=0.5, p=0.5),
+            A.RandomShadow(num_shadows_limit=(1, 3), shadow_roi=(0, 0, 1, 1), p=0.5),
+        ], p=0.3),
+        A.HueSaturationValue(hue_shift_limit=15, sat_shift_limit=25, val_shift_limit=15, p=0.5),
+        A.RandomBrightnessContrast(brightness_limit=0.2, contrast_limit=0.2, p=0.6),
+        A.ImageCompression(quality_lower=60, quality_upper=95, p=0.3),
+        A.OpticalDistortion(distort_limit=0.05, shift_limit=0.05, p=0.3),
+    ], bbox_params=A.BboxParams(format='yolo', min_visibility=0.2, label_fields=['class_labels']))
 
     tile_names = list(tiles.keys())
 
@@ -170,12 +238,20 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100, start_i
             # Place tiles ensuring NO overlap
             placed_boxes = []  # To track (x1, y1, x2, y2) of placed tiles
 
+            # Add visual clutter before placing tiles
+            if random.random() < 0.7:
+                bg = add_clutter(bg, backgrounds, num_clutter=random.randint(2, 5))
+
             for _ in range(num_tiles):
                 t_name = random.choice(tile_names)
-                t_img = tiles[t_name]
+                t_img = tiles[t_name].copy()
+
+                # Apply wear and tear to tile
+                if random.random() < 0.6:
+                    t_img = apply_wear_and_tear(t_img)
 
                 # Resize tile randomly
-                scale = random.uniform(0.5, 1.5)
+                scale = random.uniform(0.6, 1.4)
                 new_w = int(t_img.shape[1] * scale)
                 new_h = int(t_img.shape[0] * scale)
                 if new_w <= 0 or new_h <= 0:
@@ -213,15 +289,20 @@ def generate_synthetic_data(raw_tile_dir, bg_dir, output_dir, count=100, start_i
                     x = random.randint(0, max_x)
                     y = random.randint(0, max_y)
 
-                    # Check for overlap
-                    overlap = False
+                    # Check for overlap (Allow up to 30% area overlap for occlusion)
+                    overlap_area = 0
+                    current_area = rot_w * rot_h
                     for bx1, by1, bx2, by2 in placed_boxes:
-                        # If rectangles intersect, there is an overlap
-                        if not (x + rot_w <= bx1 or x >= bx2 or y + rot_h <= by1 or y >= by2):
-                            overlap = True
-                            break
+                        # Intersection
+                        ix1 = max(x, bx1)
+                        iy1 = max(y, by1)
+                        ix2 = min(x + rot_w, bx2)
+                        iy2 = min(y + rot_h, by2)
 
-                    if not overlap:
+                        if ix2 > ix1 and iy2 > iy1:
+                            overlap_area += (ix2 - ix1) * (iy2 - iy1)
+
+                    if overlap_area / current_area < 0.3:
                         placed = True
                         placed_boxes.append((x, y, x + rot_w, y + rot_h))
                         break
