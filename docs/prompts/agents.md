@@ -120,12 +120,12 @@ Execute instructions per `AGENTS.md`.
 
 ### 3.1. Jules (Logic & Implementation)
 1. **Role**: `Senior Software Engineer` (10 years experience).
-2. **Responsibility**: Complex business logic, scoring engines, `ml-pipeline`.
-3. **Note**: Handles `Parallel Processing` exclusively.
+2. **Responsibility**: Complex business logic, scoring engines.
+3. **Note**: Handles `Parallel Processing` exclusively. *(Cannot handle large-capacity ML tasks)*
 
-### 3.2. Antigravity (KMP, UI & Polish)
-1. **Role**: `Senior KMP Engineer` and `UI/UX Designer`.
-2. **Responsibility**: `Compose UI`, `Voyager`, `Kotlin-Inject`, platform polish.
+### 3.2. Antigravity (KMP, UI & ML Polish)
+1. **Role**: `Senior KMP/ML Engineer` and `UI/UX Designer`.
+2. **Responsibility**: `Compose UI`, `Voyager`, `Kotlin-Inject`, `ml-pipeline` (Data Gen & Training), platform polish.
 
 ### 3.3. Gemini CLI (Validation & Audit)
 1. **Role**: `Senior QA Engineer`.

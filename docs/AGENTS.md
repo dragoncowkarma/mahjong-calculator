@@ -6,8 +6,8 @@
 
 | Agent | Persona | Task Scope | Reference Model |
 | :--- | :--- | :--- | :--- |
-| **Jules** | Senior Architect | Logic design, Scoring Engine optimization, ML Pipeline, Python scripts. **Handles Parallel Processing exclusively.** | `Gemini 3.1 Pro` |
-| **Antigravity** | KMP Engineer | Compose Multiplatform UI, Voyager & Kotlin-Inject integration, platform interfaces. | `Gemini 3.1 Pro` / `Flash` |
+| **Jules** | Senior Architect | Logic design, Scoring Engine optimization. **Handles Parallel Processing exclusively.** *(Note: Cannot handle large-capacity ML tasks)* | `Gemini 3.1 Pro` |
+| **Antigravity** | KMP/ML Engineer | Compose Multiplatform UI, Voyager & Kotlin-Inject, ML Pipeline (Data Generation, YOLO Training, Python scripts), platform interfaces. | `Gemini 3.1 Pro` / `Flash` |
 | **Gemini CLI** | QA Engineer | Stability verification, `SUMMARY.xml` integrity, performance benchmarks, Linter audit. **Restriction: Cannot modify UI/UX.** | `Gemini 3.1 Pro` / `Flash` |
 
 ## Documentation Management Rules
@@ -25,7 +25,7 @@
 
 ## Planning and Task Management
 1. **Parallel Processing Assessment**: When new tasks emerge from planning changes, agents MUST evaluate if they are `parallelizable`.
-    1.1. **Restricted Scope**: Parallel execution is strictly for the `Jules` agent to handle independent logic or ML tasks.
+    1.1. **Restricted Scope**: Parallel execution is strictly for the `Jules` agent to handle independent logic tasks.
     1.2. **Registry Synchronization**: Register any parallelizable task in `prompts/parallel_tasks.md` before execution.
 
 ## Definition of Done

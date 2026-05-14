@@ -19,6 +19,17 @@
 - [x] **01005**: 환경 검증
     - 전체 프로젝트 환경 설정 최적화 및 빌드 파이프라인 무결성 검사.
 
+## 1.5단계: 품질 보증 및 도메인 갭 해소 (Phase 1.5: QA & Domain Gap Resolution)
+- [ ] **01501**: 계산 엔진 엣지 케이스 테스트 (Calculator Edge Cases)
+    - 복합 대기(다면팅), 후리텐(Furiten), 핀후(Pinfu) 부수 계산 등 고난도 엣지 케이스 단위 테스트 추가 및 통과 검증.
+    - 로컬 룰(예: 아카도라 취급, 쿠이카에 금지 등) 처리 유연성 검증.
+- [ ] **01502**: 합성 데이터 도메인 적응 (Synthetic Data Domain Adaptation)
+    - 실제 환경(조명, 그림자, 패 겹침, 손에 의한 가려짐, 마모 등) 노이즈를 시뮬레이션하는 데이터 증강(Augmentation) 파이프라인 고도화.
+    - 실데이터와 합성 데이터 간의 '도메인 갭(Domain Gap)' 최소화를 위한 이미지 품질 평가 매트릭 설정.
+- [ ] **01503**: 자동화 검증 파이프라인 (Automated Validation Pipeline)
+    - `app/` 코어 로직 단위 테스트 및 `ml-pipeline/` 라벨링 무결성을 자동 검사하는 CI 파이프라인(예: GitHub Actions) 초안 작성.
+    - `SUMMARY.xml` 및 `AGENTS.md` 제약 조건을 검증하는 Linter 훅 연동.
+
 ## 2단계: AI 모델 학습 및 최적화 (5-9주차)
 - [ ] **02001**: YOLO 학습
     - YOLOv8/v11 Nano 기반의 객체 탐지 모델 학습 (`ml-pipeline/src/training`).
