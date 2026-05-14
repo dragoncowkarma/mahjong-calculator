@@ -11,6 +11,7 @@
 ml-pipeline/venv/
 ml-pipeline/__pycache__/
 ml-pipeline/.ipynb_checkpoints/
+ml-pipeline/data/synthetic/
 
 # Android/Kotlin (Root level if applicable)
 .gradle/
