@@ -1,0 +1,40 @@
+path: ../data/processed  # dataset root dir
+train: train/images  # train images (relative to 'path')
+val: val/images    # val images (relative to 'path')
+
+# Classes
+names:
+  0: Man1
+  1: Man2
+  2: Man3
+  3: Man4
+  4: Man5
+  5: Man6
+  6: Man7
+  7: Man8
+  8: Man9
+  9: Pin1
+  10: Pin2
+  11: Pin3
+  12: Pin4
+  13: Pin5
+  14: Pin6
+  15: Pin7
+  16: Pin8
+  17: Pin9
+  18: Sou1
+  19: Sou2
+  20: Sou3
+  21: Sou4
+  22: Sou5
+  23: Sou6
+  24: Sou7
+  25: Sou8
+  26: Sou9
+  27: Ton
+  28: Nan
+  29: Shaa
+  30: Pei
+  31: Haku
+  32: Hatsu
+  33: Chun
