@@ -1,30 +1,112 @@
 # Monorepo Root GitIgnore
 
-# Common
+# --- OS Specific ---
 .DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+config.ini
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# --- IDEs ---
 .idea/
 .vscode/
 *.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+.nbproject/
+*.swp
+*~
+
+# --- Common Build/Log ---
 *.log
-
-# ML Pipeline (Python)
-ml-pipeline/venv/
-ml-pipeline/__pycache__/
-ml-pipeline/.ipynb_checkpoints/
-ml-pipeline/data/synthetic/
-
-# Android/Kotlin (Root level if applicable)
-.gradle/
+*.bak
+*.tmp
+*.temp
 build/
+out/
+bin/
+
+# --- Gradle / Android ---
+.gradle/
 local.properties
 .kotlin/
 captures/
 *.apk
-*.aar
+*.ap_
+*.dex
+*.class
+**/build/
+**/intermediate/
+**/generated/
+*.keystore
+!debug.keystore
 *.jks
+*.aar
+*.jar
+*.bundle
+gradle-app.setting
+.navigation/
+output.json
 
-# iOS
+# --- iOS / Xcode ---
 iosApp/DerivedData/
 iosApp/*.xcworkspace/
 iosApp/Pods/
 iosApp/build/
+iosApp/.idea/
+iosApp/*.pbxuser
+iosApp/*.mode1v3
+iosApp/*.mode2v3
+iosApp/*.perspectivev3
+iosApp/*.xcuserstate
+iosApp/xcuserdata/
+iosApp/project.xcworkspace/
+iosApp/DerivedData/
+iosApp/Index/
+iosApp/*.moved-aside
+iosApp/*.xccheckout
+iosApp/*.xcscmblueprint
+# Swift Package Manager
+iosApp/.build/
+iosApp/.swiftpm/
+
+# --- KMP / Compose Multiplatform ---
+.konan/
+kotlin-js-store/
+.kotlin-js-store/
+
+# --- ML Pipeline (Python) ---
+ml-pipeline/.venv/
+ml-pipeline/venv/
+ml-pipeline/env/
+ml-pipeline/.env
+ml-pipeline/__pycache__/
+ml-pipeline/.ipynb_checkpoints/
+ml-pipeline/.pytest_cache/
+ml-pipeline/.mypy_cache/
+ml-pipeline/.ruff_cache/
+ml-pipeline/*.egg-info/
+ml-pipeline/dist/
+ml-pipeline/build/
+
+# ML Pipeline Data & Models
+ml-pipeline/data/synthetic/**/*
+ml-pipeline/data/processed/**/*
+ml-pipeline/data/real/**/*
+!**/.gitkeep
+
+ml-pipeline/runs/
+ml-pipeline/models/*.pt
+ml-pipeline/models/*.onnx
+ml-pipeline/models/*.tflite
+ml-pipeline/models/*.mlmodel
+ml-pipeline/models/*.mlpackage
