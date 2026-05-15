@@ -86,6 +86,18 @@
       <Path>app/composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/models/ImageBitmapDecoder.kt</Path>
       <Responsibility>Platform-agnostic interface for decoding byte arrays into ImageBitmap for UI preview.</Responsibility>
     </Component>
+    <Component name="ModelExportPipeline" type="Pipeline">
+      <Path>ml-pipeline/src/export/export_model.py</Path>
+      <Responsibility>Handles conversion from PyTorch (.pt) to TFLite and CoreML formats with FP16 quantization and size verification (target &lt; 10MB).</Responsibility>
+    </Component>
+    <Component name="ParityVerifier" type="QA">
+      <Path>ml-pipeline/src/export/verify_parity.py</Path>
+      <Responsibility>Ensures inference parity (&lt; 1% accuracy deviation) between PyTorch and mobile formats using a validation dataset.</Responsibility>
+    </Component>
+    <Component name="MobileResources" type="Asset">
+      <Path>app/composeApp/src/commonMain/composeResources/models</Path>
+      <Responsibility>Central repository for versioned TFLite and CoreML binaries used by the KMP application.</Responsibility>
+    </Component>
   </CoreComponents>
 
   <PlatformIntegrations>

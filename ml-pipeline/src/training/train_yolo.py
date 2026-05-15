@@ -43,7 +43,7 @@ def train_model(data_yaml, epochs=50, imgsz=640, model_variant='yolov8n.pt'):
 if __name__ == "__main__":
     # Path relative to script location
     script_dir = Path(__file__).parent
-    config_path = script_dir / "yolo_config.yaml"
+    config_path = script_dir / "tiny_config.yaml"
     
     # Verify config exists
     if not config_path.exists():

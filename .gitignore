@@ -102,6 +102,7 @@ ml-pipeline/build/
 ml-pipeline/data/synthetic/**/*
 ml-pipeline/data/processed/**/*
 ml-pipeline/data/real/**/*
+ml-pipeline/data/tiny/**/*
 !**/.gitkeep
 
 ml-pipeline/runs/
