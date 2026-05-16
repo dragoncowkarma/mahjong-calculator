@@ -1,9 +1,6 @@
-import os
-import torch
 import numpy as np
 from pathlib import Path
 from ultralytics import YOLO
-import time
 
 def verify_parity(pt_model_path, tflite_model_path, val_data_dir, num_samples=100):
     """

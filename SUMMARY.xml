@@ -86,6 +86,10 @@
       <Path>app/composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/models/ImageBitmapDecoder.kt</Path>
       <Responsibility>Platform-agnostic interface for decoding byte arrays into ImageBitmap for UI preview.</Responsibility>
     </Component>
+    <Component name="ModelTrainingPipeline" type="Pipeline">
+      <Path>ml-pipeline/src/training/train_yolo.py</Path>
+      <Responsibility>Orchestrates YOLOv8/v11 Nano model training for 34 Mahjong tile classes using synthetic datasets, targeting mAP &gt;= 95% on validation set.</Responsibility>
+    </Component>
     <Component name="ModelExportPipeline" type="Pipeline">
       <Path>ml-pipeline/src/export/export_model.py</Path>
       <Responsibility>Handles conversion from PyTorch (.pt) to TFLite and CoreML formats with FP16 quantization and size verification (target &lt; 10MB).</Responsibility>

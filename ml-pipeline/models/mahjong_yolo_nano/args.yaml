@@ -4,9 +4,9 @@ model: yolov8n.pt
 data: /Users/macbook/Desktop/mahjong-calculator/ml-pipeline/src/training/tiny_config.yaml
 epochs: 50
 time: null
-patience: 10
-batch: 16
-imgsz: 640
+patience: 15
+batch: 8
+imgsz: 320
 save: true
 save_period: -1
 cache: false
@@ -16,7 +16,7 @@ project: /Users/macbook/Desktop/mahjong-calculator/ml-pipeline/models
 name: mahjong_yolo_nano
 exist_ok: true
 pretrained: true
-optimizer: auto
+optimizer: SGD
 verbose: true
 seed: 0
 deterministic: true

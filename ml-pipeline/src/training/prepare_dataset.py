@@ -1,6 +1,5 @@
 import os
 import random
-import shutil
 from pathlib import Path
 
 def prepare_dataset(synthetic_dir, processed_dir, train_ratio=0.8):

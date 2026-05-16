@@ -1,15 +1,13 @@
-import os
 from pathlib import Path
 from ultralytics import YOLO
 
-def train_model(data_yaml, epochs=50, imgsz=640, model_variant='yolov8n.pt'):
+def train_model(data_yaml, epochs=50, imgsz=320, model_variant='yolov8n.pt'):
     """
     Train YOLO Nano model for Mahjong tile recognition.
     Targeting mAP >= 95%.
     """
     # Ensure models directory exists for logs/weights
     base_dir = Path(__file__).parent.parent.parent
-    project_dir = base_dir.parent
     models_dir = base_dir / "models"
     models_dir.mkdir(exist_ok=True)
 
@@ -22,7 +20,10 @@ def train_model(data_yaml, epochs=50, imgsz=640, model_variant='yolov8n.pt'):
         data=data_yaml,
         epochs=epochs,
         imgsz=imgsz,
-        patience=10,
+        batch=8,
+        lr0=0.01,
+        optimizer='SGD',
+        patience=15,
         project=str(models_dir),
         name="mahjong_yolo_nano",
         exist_ok=True,
@@ -43,7 +44,7 @@ def train_model(data_yaml, epochs=50, imgsz=640, model_variant='yolov8n.pt'):
 if __name__ == "__main__":
     # Path relative to script location
     script_dir = Path(__file__).parent
-    config_path = script_dir / "tiny_config.yaml"
+    config_path = script_dir / "yolo_config.yaml"
     
     # Verify config exists
     if not config_path.exists():

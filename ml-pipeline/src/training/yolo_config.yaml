@@ -1,4 +1,4 @@
-path: ../../data/processed  # dataset root dir
+path: /Users/macbook/Desktop/mahjong-calculator/ml-pipeline/data/processed  # dataset root dir
 train: train/images  # train images (relative to 'path')
 val: val/images    # val images (relative to 'path')
 
