@@ -143,6 +143,9 @@
     <File path="ml-pipeline/src/utils/check_labels.py">YOLO format labeling integrity checker to ensure data quality for training.</File>
     <File path="scripts/agent_md_linter.py">Protocol enforcement script to verify EOF newline and other standards.</File>
     <File path=".github/workflows/ci.yml">Automated CI pipeline for KMP tests, Python linting, and dataset validation.</File>
+    <File path="ml-pipeline/src/export/convert_and_verify.py">YOLO model export and Mobile integration script (ONNX/CoreML/TFLite).</File>
+    <File path="docs/reports/02002_model_export_report.md">Troubleshooting and verification report for Milestone 02002 (Model Export).</File>
+    <File path="app/composeApp/src/commonMain/composeResources/models/">Integrated mobile-optimized models for cross-platform inference.</File>
     <File path="docs/prompts/010/">Phase 1: Foundation &amp; Synthesis modular prompts (lowercase, English). 01001 and 01002 are completed. 01003-01005 are active.</File>
     <File path="docs/prompts/015/">Phase 1.5: QA &amp; Domain Gap Resolution modular prompts.</File>
     <File path="docs/prompts/020/">Phase 2: AI Optimization modular prompts (lowercase, English).</File>
