@@ -20,6 +20,13 @@ Before starting, read `../../SUMMARY.xml` and `../../../REFACTOR_TRACKING.md`.
 5. **Logging**: Save all training logs, metrics, and best weights in `ml-pipeline/models/`.
 </task>
 
+# 🛑 Exit Criteria (명확한 종료 및 검증 조건)
+에이전트는 다음 산출물이 확보되는 즉시 작업을 종료하며, 추가적인 자체 검증 루프나 차기 세션을 시작하지 않습니다.
+1. **Final Model Weights**: `ml-pipeline/models/best.pt` 파일 생성 확인.
+2. **Performance Metrics**: `results.csv` 또는 로그 파일에서 `mAP50-95 ≥ 0.95` 수치 확인.
+3. **Training Logs**: 모든 훈련 로그와 그래프가 지정된 `models/` 폴더에 아카이빙됨.
+4. **No Hidden Tasks**: 명시된 목표 달성 후, 다른 지표(예: mAP 98% 도전 등)를 위해 훈련을 연장하거나 지시하지 않은 최적화 작업을 수행하지 않음.
+
 # ⚠️ Constraints
 <constraints>
 1. Ensure EXACTLY one empty line at the end of every file (EOF).
@@ -49,8 +56,9 @@ ml-pipeline/data/ (verified dataset from 01003)
 
 <verification>
 - [ ] Context/Refactor Tracking verified
-- [ ] mAP ≥ 95% achieved on validation set
-- [ ] Model weights saved to ml-pipeline/models/
+- [ ] Exit Criteria: best.pt generated & mAP ≥ 95% verified
+- [ ] Training logs archived in models/ directory
+- [ ] No unauthorized iterative tasks started after goal attainment
 - [ ] EOF empty line completed
 </verification>
 </output_format>

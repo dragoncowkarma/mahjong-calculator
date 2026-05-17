@@ -21,6 +21,13 @@ Before starting, read `../../SUMMARY.xml` and `../../../REFACTOR_TRACKING.md`.
 6. **Validation**: Validate inference results using sample images against known ground truth.
 </task>
 
+# 🛑 Exit Criteria (명확한 종료 및 검증 조건)
+에이전트는 다음 산출물이 확보되는 즉시 작업을 종료하며, 추가적인 세션이나 지시하지 않은 리팩토링을 수행하지 않습니다.
+1. **Interface & Implementation**: `MahjongDetector` 인터페이스 및 Android/iOS별 `actual` 구현체 코드 작성 완료.
+2. **Post-processing Engine**: `commonMain` 내 NMS 및 적오(Red Five) 판별 로직 작동 확인.
+3. **Performance SLA**: 단일 프레임 추론 및 후처리 합산 시간이 200ms 이하임을 로그로 확인.
+4. **Coordinate Accuracy**: 정규화된 좌표가 타겟 디스플레이 좌표로 정확히 변환됨을 단위 테스트로 확인.
+
 # ⚠️ Constraints
 <constraints>
 1. Ensure EXACTLY one empty line at the end of every file (EOF).
@@ -49,8 +56,9 @@ app/composeApp/src/commonMain/kotlin/com/dragoncowkarma/mahcalc/models/TileDetec
 
 <verification>
 - [ ] Context/Refactor Tracking verified
-- [ ] Inference latency < 200ms validated
-- [ ] NMS and coordinate mapping tested with sample images
+- [ ] Exit Criteria: MahjongDetector interface & platform implementations completed
+- [ ] Performance SLA (inference < 200ms) and NMS/Red Five logic verified
+- [ ] Coordinate mapping unit tests passed
 - [ ] EOF empty line completed
 </verification>
 </output_format>

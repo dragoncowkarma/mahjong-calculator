@@ -27,6 +27,22 @@
 1. **Parallel Execution**: Parallel task processing is EXCLUSIVELY permitted for the `Jules` agent.
 2. **Gemini CLI Constraints**: Due to environment/`MCP` limitations, `Gemini CLI` must NOT be used for `UI` modification or resource-heavy tasks.
 
+### 🛑 COMMAND EXECUTION SAFETY RULES (터미널 실행 안전 규칙)
+
+1. **비대화형(Non-interactive) 모드 강제:**
+   - 파이썬 스크립트나 `pip` 설치 등을 실행할 때는 절대 사용자의 입력(Y/N)을 기다리지 않도록 환경 변수를 설정하세요.
+   - 예시: `YOLO_VERBOSE=False`, `CI=true` 환경 변수를 주입하여 텔레메트리나 상호작용 프롬프트를 무시하세요.
+
+2. **무한 Polling 방지 및 Timeout 강제:**
+   - 명령어를 실행한 후 `Checked command status`를 **연속 5회 이상 반복하지 마세요.**
+   - 5회 확인 후에도 프로세스가 끝나지 않았다면, 프로세스가 멈춘(Hanging) 것으로 간주하고 즉시 해당 프로세스를 Kill(종료) 하세요.
+   - 긴 시간이 필요한 작업이라면 리눅스의 `timeout` 명령어를 활용하세요. (예: `timeout 120s ./.venv/bin/python export_model.py`)
+
+3. **로그 파일 리다이렉션 (Log Redirection):**
+   - 출력이 많은 ML 모델 익스포트/트레이닝 명령어를 실행할 때는 표준 출력과 에러를 파일로 리다이렉션하세요.
+   - 예시: `./.venv/bin/python src/export/export_model.py > export_log.txt 2>&1 &`
+   - 프로세스가 예상보다 길어지면 상태 체크를 멈추고 `cat export_log.txt`를 통해 현재 로그의 마지막 부분을 읽어 문제 원인을 파악하세요.
+
 ## Definition of Done (DoD)
 A task is complete when ALL of the following pass:
 1. `SUMMARY.xml` is updated with all new files and component paths.

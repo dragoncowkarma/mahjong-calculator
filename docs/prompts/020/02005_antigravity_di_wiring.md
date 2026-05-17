@@ -23,6 +23,13 @@ Before starting, read `../../SUMMARY.xml` and `../../../REFACTOR_TRACKING.md`.
 5. **Convention Compliance**: Ensure all new wiring follows `docs/specs/08` Voyager convention.
 </task>
 
+# 🛑 Exit Criteria (명확한 종료 및 검증 조건)
+에이전트는 다음 산출물이 확보되는 즉시 작업을 종료하며, 지시하지 않은 아키텍처 변경을 수행하지 않습니다.
+1. **DI Graph Completion**: `AppComponent` 및 각 플랫폼별 DI 모듈의 `Kotlin-Inject` 어노테이션 기반 정의 완료.
+2. **Dependency Resolution**: `MahjongDetector` 및 `MahjongCalculator`가 빌드 타임에 정상적으로 주입됨을 확인.
+3. **Convention Match**: 모든 `ScreenModel`이 Voyager의 `rememberScreenModel`과 호환되도록 주입 로직이 설계됨을 확인.
+4. **Leak-free Scope**: 에이전트 도구 또는 단위 테스트를 통해 싱글톤 객체의 수명 주기가 앱 수명 주기와 일치함을 검증.
+
 # ⚠️ Constraints
 <constraints>
 1. Ensure EXACTLY one empty line at the end of every file (EOF).
@@ -52,8 +59,9 @@ app/composeApp/src/iosMain/ (IosAppComponent)
 
 <verification>
 - [ ] Context/Refactor Tracking verified
-- [ ] No singleton leaks (lifecycle-aware scoping)
-- [ ] All ScreenModels accessible via rememberScreenModel
+- [ ] Exit Criteria: DI graph for AppComponent and platform modules completed
+- [ ] MahjongDetector and ScreenModel injection verified
+- [ ] Convention compliance (Voyager/Kotlin-Inject) and scoping verified
 - [ ] EOF empty line completed
 </verification>
 </output_format>

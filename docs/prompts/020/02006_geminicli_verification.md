@@ -21,6 +21,13 @@ Before starting, read `../../SUMMARY.xml` and `../../../REFACTOR_TRACKING.md`.
 5. **Quality Gate Sign-off**: Produce a formal pass/fail report against Phase 2 gate criteria.
 </task>
 
+# 🛑 Exit Criteria (명확한 종료 및 검증 조건)
+에이전트는 다음 산출물이 확보되는 즉시 작업을 종료하며, 지시하지 않은 코드 수정이나 추가 테스트를 수행하지 않습니다.
+1. **Verification Logs**: 모델 무결성 및 DI 링크 확인 결과 로그 확보.
+2. **Benchmark Data**: 레이턴시 및 모델 크기 측정값 데이터 확보.
+3. **Permission Report**: 플랫폼별 권한 설정 누락 여부 확인서 작성.
+4. **Final Gate Report**: `PHASE 2 QUALITY GATE: PASS/FAIL` 결론이 명시된 최종 리포트 생성 확인.
+
 # ⚠️ Constraints
 <constraints>
 1. Ensure EXACTLY one empty line at the end of every file (EOF).
@@ -51,12 +58,10 @@ Integration points between ml-pipeline and app:
 
 <verification>
 - [ ] Context/Refactor Tracking verified
-- [ ] mAP ≥ 95% confirmed (from 02001 training logs)
-- [ ] Model size ≤ 10MB per format
-- [ ] TFLite ↔ CoreML accuracy parity ≤ 1%
-- [ ] Inference latency < 200ms/frame
-- [ ] Camera permissions correctly declared
-- [ ] **PHASE 2 QUALITY GATE: PASS / FAIL**
+- [ ] Exit Criteria: Performance benchmark and permission audit logs secured
+- [ ] mAP ≥ 95%, Model size ≤ 10MB, and Parity ≤ 1% confirmed
+- [ ] Inference latency < 200ms/frame confirmed
+- [ ] **PHASE 2 QUALITY GATE: PASS / FAIL REPORT GENERATED**
 - [ ] EOF empty line completed
 </verification>
 </output_format>
